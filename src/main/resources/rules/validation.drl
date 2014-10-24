@@ -13,6 +13,7 @@ import com.github.ligangty.droolstest.bank.util.*;
 //import functions here
 import function com.github.ligangty.droolstest.bank.service.ValidationHelper.error;
 import function com.github.ligangty.droolstest.bank.service.ValidationHelper.warning;
+import function com.github.ligangty.droolstest.bank.service.ValidationHelper.yearsPassedSince;
 
 //declare any global variables here
 global ValidationReport validationReport;
@@ -39,4 +40,19 @@ rule "account owner required"
         $account : Account( owner==null )
     then 
         error(kcontext, $account);
+end
+
+rule "account balance at least"
+    when
+    	$account : Account( balance < 100 )
+    then 
+    	warning(kcontext, $account);
+end 
+
+rule "student account customer age less than rule"
+    when 
+       Customer( eval(yearsPassedSince(dateOfBirth) >= 27) )
+       $account : Account( type == Account.Type.STUDENT)
+    then 
+       error(kcontext, $account);
 end

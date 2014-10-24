@@ -1,11 +1,9 @@
 package com.github.ligangty.droolstest.bank.validation;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +33,7 @@ import com.github.ligangty.droolstest.bank.util.ReportFactory;
 import com.github.ligangty.droolstest.bank.util.ValidationReport;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 
 public class ValidationTest {
     static KieSession session;
@@ -72,6 +71,7 @@ public class ValidationTest {
         Customer customer = createCustomerBasic();
         assertNull(customer.getAddress());
         assertReportContains(Message.Type.WARNING, "address required rule", customer);
+        customer = createCustomerBasic();
         customer.setAddress(new Address());
         assertNotReportContains(Message.Type.WARNING, "address required rule", customer);
     }
@@ -81,42 +81,61 @@ public class ValidationTest {
         Customer customer = createCustomerBasic();
         assertNull(customer.getPhoneNumber());
         assertReportContains(Message.Type.ERROR, "phone number required", customer);
-        customer.setAddress(new Address());
+        customer = createCustomerBasic();
+        customer.setPhoneNumber("1234567");
         assertNotReportContains(Message.Type.ERROR, "phone number required", customer);
     }
 
     @Test
     public void accountOwnerRequired() {
         Customer customer = createCustomerBasic();
-        assertNull(customer.getPhoneNumber());
-        assertReportContains(Message.Type.ERROR, "account owner required", customer);
-        customer.setAddress(new Address());
+        Account account = customer.getAccounts().iterator().next();
+        assertNotNull(account.getOwner());
         assertNotReportContains(Message.Type.ERROR, "account owner required", customer);
+        customer = createCustomerBasic();
+        account = new Account();
+        customer.setAccounts(Sets.newHashSet(account));
+        assertReportContains(Message.Type.ERROR, "account owner required", customer, account);
+    }
 
+    @Test
+    public void accountBalanceAtLeast() {
+        Customer customer = createCustomerBasic();
+        Account account = customer.getAccounts().iterator().next();
+        assertNotNull(account.getOwner());
+        assertEquals(BigDecimal.ZERO, account.getBalance());
+        assertReportContains(Message.Type.WARNING, "account balance at least", customer, account);
+        customer = createCustomerBasic();
+        account = customer.getAccounts().iterator().next();
+        account.setBalance(BigDecimal.valueOf(54.00));
+        assertReportContains(Message.Type.WARNING, "account balance at least", customer, account);
+        customer = createCustomerBasic();
+        account = customer.getAccounts().iterator().next();
+        account.setBalance(BigDecimal.valueOf(100.00));
+        assertNotReportContains(Message.Type.WARNING, "account balance at least", customer, account);
     }
 
     private void assertReportContains(Message.Type type, String messageKey, Customer customer, Object... context) {
-        ValidationReport report = reportFactory.createValidationReport();
-        List<Command<Object>> commands = newArrayList();
-        commands.add(CommandFactory.newSetGlobal("validationReport", report));
-        commands.add(CommandFactory.newInsertElements(getFacts(customer)));
-        session.execute(CommandFactory.newBatchExecution(commands));
-        session.fireAllRules();
-
+        ValidationReport report = executeRules(type, messageKey, customer, context);
         assertTrue("Report doesn't contain message [" + messageKey + "]", report.contains(messageKey));
         Message message = getMessage(report, messageKey);
         assertEquals(Arrays.asList(context), message.getContextOrdered());
     }
 
     private void assertNotReportContains(Message.Type type, String messageKey, Customer customer, Object... context) {
+        ValidationReport report = executeRules(type, messageKey, customer, context);
+        assertFalse("Report doesn't contain message [" + messageKey + "]", report.contains(messageKey));
+        assertNull(getMessage(report, messageKey));
+    }
+
+    private ValidationReport executeRules(Message.Type type, String messageKey, Customer customer, Object... context) {
         ValidationReport report = reportFactory.createValidationReport();
         List<Command<Object>> commands = newArrayList();
         commands.add(CommandFactory.newSetGlobal("validationReport", report));
         commands.add(CommandFactory.newInsertElements(getFacts(customer)));
         session.execute(CommandFactory.newBatchExecution(commands));
-
-        assertFalse("Report doesn't contain message [" + messageKey + "]", report.contains(messageKey));
-        assertNull(getMessage(report, messageKey));
+        session.fireAllRules();
+        return report;
     }
 
     private Collection<Object> getFacts(Customer customer) {
