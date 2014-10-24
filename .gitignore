@@ -1,0 +1,10 @@
+./bin/*
+./settings/*
+./target/*
+.settings/*
+target/*
+.pmd
+.classpath
+.project
+.externalToolBuilders
+.externalToolBuilders/*
