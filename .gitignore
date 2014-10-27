@@ -8,3 +8,6 @@ target/*
 .project
 .externalToolBuilders
 .externalToolBuilders/*
+/target
+.settings
+target

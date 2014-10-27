@@ -1,0 +1,65 @@
+//created on: Oct 24, 2014
+package com.github.ligangty.droolstest.bank.validation
+
+//list any import classes here.
+import org.kie.api.runtime.rule.RuleContext;
+
+import java.util.List;
+
+import com.github.ligangty.droolstest.bank.model.*;
+import com.github.ligangty.droolstest.bank.service.*;
+import com.github.ligangty.droolstest.bank.util.*;
+
+//import functions here
+import function com.github.ligangty.droolstest.bank.service.ValidationHelper.error;
+import function com.github.ligangty.droolstest.bank.service.ValidationHelper.warning;
+import function com.github.ligangty.droolstest.bank.service.ValidationHelper.yearsPassedSince;
+
+//declare any global variables here
+global ValidationReport validationReport;
+global ReportFactory reportFactory;
+global BankingInquiryService inquiryService;
+
+//rules
+rule "address required rule"
+    when
+        Customer( address == null );
+    then
+        warning(kcontext);
+end
+
+rule "phone number required"
+    when 
+    	Customer( phoneNumber==null||=="" )
+    then 
+    	error(kcontext);
+end
+
+rule "account owner required"
+    when 
+        $account : Account( owner==null )
+    then 
+        error(kcontext, $account);
+end
+
+rule "account balance at least"
+    when
+    	$account : Account( balance < 100 )
+    then 
+    	warning(kcontext, $account);
+end 
+
+rule "student account customer age less than rule"
+    when 
+       Customer( eval(yearsPassedSince(dateOfBirth) >= 27) )
+       $account : Account( type == Account.Type.STUDENT)
+    then 
+       error(kcontext, $account);
+end
+
+rule "account number unique"
+    when 
+    	$account : Account ( eval( !inquiryService.isAccountNumberUnique($account) ) )
+    then
+        error(kcontext, $account);
+end
