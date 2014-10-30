@@ -3,18 +3,52 @@ package com.github.ligangty.droolstest.transform
 
 //list any import classes here.
 import java.util.*;
-import droolsbook.transform.service.LegacyBankService;
-import droolsbook.bank.model.Address;
-import droolsbook.bank.model.Address.Country;
+
+import com.github.ligangty.droolstest.transform.service.LegacyBankService;
+import com.github.ligangty.droolstest.bank.model.Address;
+import com.github.ligangty.droolstest.bank.model.Address.Country;
 
 global LegacyBankService legacyService;
-
+/*
 rule "find All Customers"
 	dialect "mvel"
 	when
-		$customerMap : Map( )
-			from legacyService.findAllCustomers()
+		$customerMap : Map( ) from legacyService.findAllCustomers()
 	then
-		$customerMap["_type_"] = "Customer"
-		insert( $customerMap )
+		//$customerMap["_type_"] = "Customer";
+		$customerMap.put("_type_", "Customer");
+		insert( $customerMap );
+end
+
+
+rule "find Address"
+    dialect "mvel"
+    when 
+        $customerMap : Map( this["_type_"] == "Customer" )
+        $addressMap : Map( ) from legacyService.findAddressByCustomerId($customerMap["customer_id"])
+    then 
+        //$customerMap["_type_"] = "Address";
+        $addressMap.put("_type_", "Address");
+        insert($addressMap);
+end
+*/
+// need to do reporting
+import com.github.ligangty.droolstest.bank.service.*;
+
+global ValidationReport validationReport;
+global ReportFactory reportFactory;
+
+import function com.github.ligangty.droolstest.bank.service.ValidationHelper.*;
+
+rule "two equal addresses remove duplication"
+    dialect "mvel"
+    when
+        $addressMap1 : Map( this["_type_"] == "Address" )
+        $addressMap2 : Map( this["_type_"] == "Address",
+        	eval( $addressMap1 != $addressMap2 ), this == $addressMap1 )
+    then
+        retract($addressMap2);
+        validationReport.addMessage(
+			reportFactory.createMessage(Message.Type.WARNING, 
+			kcontext.getRule().getName(), $addressMap2));
 end

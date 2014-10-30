@@ -27,7 +27,7 @@ public class DefaultValidationReport implements ValidationReport {
     }
 
     @Override
-    public Set<Message> getMessageByType(Type type) {
+    public Set<Message> getMessagesByType(Type type) {
         if (type == null) {
             return emptySet();
         }

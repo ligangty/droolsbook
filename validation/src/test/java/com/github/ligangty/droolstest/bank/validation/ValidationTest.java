@@ -14,6 +14,7 @@ import java.util.List;
 import org.joda.time.DateMidnight;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -61,11 +62,12 @@ public class ValidationTest {
             throw new RuntimeException("Build Errors:\n" + kb.getResults().toString());
         }
         KieContainer kContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
+        
+        session = kContainer.newKieSession();
 
         BankingInquiryService inquiryService = new BankingInquiryServiceImpl();
         reportFactory = new DefaultReportFactory();
-
-        session = kContainer.newKieSession();
+        
         session.setGlobal("reportFactory", reportFactory);
         session.setGlobal("inquiryService", inquiryService);
     }

@@ -15,7 +15,7 @@ public interface ValidationReport {
     /**
      * @return all messages of specified type in this report
      */
-    Set<Message> getMessageByType(Message.Type type);
+    Set<Message> getMessagesByType(Message.Type type);
     
     /**
      * @return true if this report contains message with specified key, false otherwise
