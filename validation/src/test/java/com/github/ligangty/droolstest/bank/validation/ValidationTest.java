@@ -8,13 +8,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.joda.time.DateMidnight;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -36,6 +36,7 @@ import com.github.ligangty.droolstest.bank.service.DefaultReportFactory;
 import com.github.ligangty.droolstest.bank.service.Message;
 import com.github.ligangty.droolstest.bank.service.ReportFactory;
 import com.github.ligangty.droolstest.bank.service.ValidationReport;
+import com.github.ligangty.droolstest.bank.utils.TrackingAgendaEventListener;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
@@ -62,12 +63,13 @@ public class ValidationTest {
             throw new RuntimeException("Build Errors:\n" + kb.getResults().toString());
         }
         KieContainer kContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
-        
+
         session = kContainer.newKieSession();
+        session.addEventListener(new TrackingAgendaEventListener());
 
         BankingInquiryService inquiryService = new BankingInquiryServiceImpl();
         reportFactory = new DefaultReportFactory();
-        
+
         session.setGlobal("reportFactory", reportFactory);
         session.setGlobal("inquiryService", inquiryService);
     }
@@ -193,7 +195,7 @@ public class ValidationTest {
         ValidationReport report = executeRules(type, messageKey, customer, context);
         assertTrue("Report doesn't contain message [" + messageKey + "]", report.contains(messageKey));
         Message message = getMessage(report, messageKey);
-        // assertEquals(Arrays.asList(context), message.getContextOrdered());
+        assertEquals(Arrays.asList(context), message.getContextOrdered());
     }
 
     private void assertNotReportContains(Message.Type type, String messageKey, Customer customer, Object... context) {
@@ -202,6 +204,7 @@ public class ValidationTest {
         assertNull(getMessage(report, messageKey));
     }
 
+    @SuppressWarnings("unchecked")
     private ValidationReport executeRules(Message.Type type, String messageKey, Customer customer, Object... context) {
         ValidationReport report = reportFactory.createValidationReport();
         List<Command<Object>> commands = newArrayList();

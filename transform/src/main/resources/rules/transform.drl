@@ -9,9 +9,9 @@ import com.github.ligangty.droolstest.bank.model.Address;
 import com.github.ligangty.droolstest.bank.model.Address.Country;
 
 global LegacyBankService legacyService;
-/*
+
 rule "find All Customers"
-	dialect "mvel"
+	//dialect "mvel"
 	when
 		$customerMap : Map( ) from legacyService.findAllCustomers()
 	then
@@ -22,7 +22,7 @@ end
 
 
 rule "find Address"
-    dialect "mvel"
+    //dialect "mvel"
     when 
         $customerMap : Map( this["_type_"] == "Customer" )
         $addressMap : Map( ) from legacyService.findAddressByCustomerId($customerMap["customer_id"])
@@ -31,7 +31,7 @@ rule "find Address"
         $addressMap.put("_type_", "Address");
         insert($addressMap);
 end
-*/
+
 // need to do reporting
 import com.github.ligangty.droolstest.bank.service.*;
 
@@ -41,7 +41,7 @@ global ReportFactory reportFactory;
 import function com.github.ligangty.droolstest.bank.service.ValidationHelper.*;
 
 rule "two equal addresses remove duplication"
-    dialect "mvel"
+    //dialect "mvel"
     when
         $addressMap1 : Map( this["_type_"] == "Address" )
         $addressMap2 : Map( this["_type_"] == "Address",

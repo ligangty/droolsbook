@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,7 @@ import com.github.ligangty.droolstest.bank.service.Message;
 import com.github.ligangty.droolstest.bank.service.ReportFactory;
 import com.github.ligangty.droolstest.bank.service.ValidationReport;
 import com.github.ligangty.droolstest.bank.utils.DroolsHelper;
-import com.google.common.collect.Maps;
+import com.github.ligangty.droolstest.bank.utils.TrackingAgendaEventListener;
 
 public class DataTransformationTest {
     static KieSession session;
@@ -56,6 +55,7 @@ public class DataTransformationTest {
         session.setGlobal("reportFactory", reportFactory);
         
         session.addEventListener(new DebugRuleRuntimeEventListener());
+        session.addEventListener(new TrackingAgendaEventListener());
 
     }
 
@@ -116,10 +116,11 @@ public class DataTransformationTest {
         addressMap2.put("street", "Barrack Street");
         assertEquals(addressMap1, addressMap2);
 
-        ExecutionResults results = execute(Arrays.asList(addressMap1, addressMap2), "twoEqualAddressesDifferentInstance",
+        ExecutionResults results = execute(Arrays.asList(addressMap1, addressMap2), "two equal addresses remove duplication",
                 "Address", "addresses");
 
         Iterator<?> addressIterator = ((List<?>) results.getValue("addresses")).iterator();
+        @SuppressWarnings("unchecked")
         Map<String, String> addressMapWinner = (Map<String, String>) addressIterator.next();
         assertEquals(addressMap1, addressMapWinner);
         assertFalse(addressIterator.hasNext());
@@ -141,6 +142,7 @@ public class DataTransformationTest {
         commands.add(new FireAllRulesCommand(new RuleNameEqualsAgendaFilter(ruleName)));
         if (filterType != null && filterOut != null) {
             GetObjectsCommand getObjectsCommand = new GetObjectsCommand(new ObjectFilter() {
+                @SuppressWarnings("rawtypes")
                 public boolean accept(Object object) {
                     return object instanceof Map && ((Map) object).get("_type_").equals(filterType);
                 }
@@ -149,7 +151,7 @@ public class DataTransformationTest {
             commands.add(getObjectsCommand);
         }
         ExecutionResults results = session.execute(CommandFactory.newBatchExecution(commands));
-       // session.fireAllRules();
+        session.fireAllRules();
         return results;
     }
 
@@ -195,7 +197,7 @@ public class DataTransformationTest {
 
         ExecutionResults results = execute(Arrays.asList(addressMap), "unknownCountry", null, null);
 
-        ValidationReport report = (ValidationReport) results.getValue("validationReport");
+//        ValidationReport report = (ValidationReport) results.getValue("validationReport");
         reportContextContains(results, "unknownCountry", addressMap);
     }
 
@@ -273,6 +275,7 @@ public class DataTransformationTest {
                 "accounts");
 
         Iterator<?> accountIterator = ((List<?>) results.getValue("accounts")).iterator();
+        @SuppressWarnings("unchecked")
         Map<String, Object> accountMap = (Map<String, Object>) accountIterator.next();
         assertEquals(new BigDecimal("400.00"), accountMap.get("balance"));
         assertFalse(accountIterator.hasNext());
