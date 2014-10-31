@@ -52,3 +52,13 @@ rule "two equal addresses remove duplication"
 			reportFactory.createMessage(Message.Type.WARNING, 
 			kcontext.getRule().getName(), $addressMap2));
 end
+
+rule "address normalization USA"
+    dialect "mvel"
+    when 
+        $addressMap : Map( this["_type_"] == "Address", this["country"] in ("US", "U.S.", "USA", "U.S.A") )
+    then
+        modify($addressMap){
+        	put("country", Country.USA)
+        };
+end

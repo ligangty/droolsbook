@@ -164,13 +164,13 @@ public class DataTransformationTest {
     }
 
     // @extract-start 03 10
-//    @Test
+    @Test
     public void addressNormalizationUSA() throws Exception {
         Map<String, String> addressMap = newHashMap();
         addressMap.put("_type_", "Address");
         addressMap.put("country", "U.S.A");
 
-        execute(Arrays.asList(addressMap), "addressNormalizationUSA", null, null);
+        execute(Arrays.asList(addressMap), "address normalization USA", null, null);
 
         assertEquals(Address.Country.USA, addressMap.get("country"));
     }
