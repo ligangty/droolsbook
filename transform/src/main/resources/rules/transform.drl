@@ -1,5 +1,5 @@
 //created on: 2014-10-27
-package com.github.ligangty.droolstest.transform
+package com.github.ligangty.droolstest.transform;
 
 //list any import classes here.
 import java.util.*;
@@ -25,7 +25,7 @@ rule "find Address"
     //dialect "mvel"
     when 
         $customerMap : Map( this["_type_"] == "Customer" )
-        $addressMap : Map( ) from legacyService.findAddressByCustomerId($customerMap["customer_id"])
+        $addressMap : Map( ) from legacyService.findAddressByCustomerId((Long)$customerMap["customer_id"])
     then 
         //$customerMap["_type_"] = "Address";
         $addressMap.put("_type_", "Address");
@@ -62,3 +62,74 @@ rule "address normalization USA"
         	put("country", Country.USA)
         };
 end
+
+rule "unknown country"
+    // dialect "mvel"
+    salience -10 //should fire after address normalization USA
+    when 
+        $addressMap : Map( this["_type_"] == "Address", eval(!($addressMap.get("country") instanceof Address.Country)))
+    then 
+        validationReport.addMessage(
+			reportFactory.createMessage(Message.Type.ERROR, 
+			kcontext.getRule().getName(), $addressMap));
+end
+
+import java.math.BigDecimal;
+function String getConversionToUSDFrom(String currencyFrom) {
+    String conversion = null;
+	if ("EUR".equals(currencyFrom)) {
+		conversion = "1.282";
+	} else if ("SKK".equals(currencyFrom)) {
+		conversion = "0.045";
+	}
+	return conversion;
+}
+//@extract-start 03 16
+rule "currency conversion to USD"
+    when 
+        $accountMap : Map( this["_type_"] == "Account", this ["currency"] != null && != "USD" ) 
+        $conversionRate : String() from getConversionToUSDFrom((String)$accountMap["currency"])
+    then 
+        modify($accountMap){
+            put("balance", new BigDecimal($conversionRate).multiply(new BigDecimal((String)$accountMap.get("balance")))),
+        	put("currency", "USD")
+        };
+end
+// @extract-end
+
+//@extract-start 03 15
+rule "unknown currency if no USD"
+    when 
+        $accountMap : Map( this["_type_"] == "Account", this ["currency"] !=null && !="USD")
+        not ( String() from getConversionToUSDFrom((String)$accountMap["currency"]) )
+    then 
+        validationReport.addMessage(
+			reportFactory.createMessage(Message.Type.ERROR, 
+			kcontext.getRule().getName(), $accountMap));
+end
+// @extract-end
+
+rule "no currency to USD"
+    when
+        $accountMap : Map( this["_type_"] == "Account", this["currency"]==null ) 
+    then 
+        modify($accountMap){
+            put("currency", "USD")
+        };
+end
+
+// @extract-start 03 19    
+rule "reduce legacy accounts"
+    salience -20 // make sure currency conversion fired
+    when 
+        $accountMap1 : Map( this["_type_"] == "Account" )
+        $accountMap2 : Map( this["_type_"] == "Account", eval( $accountMap2 != $accountMap1 ), 
+        	this["customer_id"] == $accountMap1["customer_id"],
+        	this["currency"] == $accountMap1["currency"] )
+    then
+        modify($accountMap1){
+        	put("balance", ((BigDecimal) $accountMap1.get("balance")).add((BigDecimal) $accountMap2.get("balance")))
+        };
+        retract($accountMap2);
+end 
+// @extract-end

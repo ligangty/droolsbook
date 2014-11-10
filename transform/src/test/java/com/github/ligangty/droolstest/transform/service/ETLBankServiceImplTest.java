@@ -36,7 +36,7 @@ public class ETLBankServiceImplTest {
     @Test
     public void testEtl() {
         // TODO: setup your database before enabling this test
-        // etlBankService.etl();
+         etlBankService.etl();
     }
 
 }

@@ -42,7 +42,7 @@ public class DataTransformationTest {
     static KieBase kieBase;
 
     @Before
-    public void setUpClass() throws Exception {
+    public void setUp() throws Exception {
         kieBase = DroolsHelper.createKieBase("rules/transform.drl", "src/main/resources/rules/transform.drl");
 
         // @extract-start 03 09
@@ -53,7 +53,7 @@ public class DataTransformationTest {
         reportFactory = new DefaultReportFactory();
 
         session.setGlobal("reportFactory", reportFactory);
-        
+
         session.addEventListener(new DebugRuleRuntimeEventListener());
         session.addEventListener(new TrackingAgendaEventListener());
 
@@ -151,7 +151,7 @@ public class DataTransformationTest {
             commands.add(getObjectsCommand);
         }
         ExecutionResults results = session.execute(CommandFactory.newBatchExecution(commands));
-        session.fireAllRules();
+
         return results;
     }
 
@@ -177,7 +177,7 @@ public class DataTransformationTest {
 
     // @extract-end
 
-//    @Test
+    // @Test
     public void addressNormalizationIreland() throws Exception {
         Map<String, String> addressMap = newHashMap();
         addressMap.put("_type_", "Address");
@@ -189,59 +189,97 @@ public class DataTransformationTest {
     }
 
     // @extract-start 03 25
-//    @Test
+    @Test
     public void unknownCountry() throws Exception {
         Map<String, String> addressMap = newHashMap();
         addressMap.put("_type_", "Address");
         addressMap.put("country", "no country");
 
-        ExecutionResults results = execute(Arrays.asList(addressMap), "unknownCountry", null, null);
+        ExecutionResults results = execute(Arrays.asList(addressMap), "unknown country", null, null);
 
-//        ValidationReport report = (ValidationReport) results.getValue("validationReport");
-        reportContextContains(results, "unknownCountry", addressMap);
+        // ValidationReport report = (ValidationReport) results.getValue("validationReport");
+        reportContextContains(results, "unknown country", addressMap);
     }
 
     // @extract-end
-
-//    @Test
-    public void nocurrencyToEUR() throws Exception {
-        Map<String, String> accountMap = newHashMap();
-        accountMap.put("_type_", "Account");
-
-        execute(Arrays.asList(accountMap), "noCurrencyToEUR", null, null);
-
-        assertEquals("EUR", accountMap.get("currency"));
-    }
 
     // @extract-start 03 16
-//    @Test
-    public void currencyConversionToEUR() throws Exception {
+    @Test
+    public void currencyConversionToUSD() throws Exception {
         Map<String, String> accountMap = newHashMap();
         accountMap.put("_type_", "Account");
-        accountMap.put("currency", "USD");
+        accountMap.put("currency", "EUR");
         accountMap.put("balance", "1000");
 
-        execute(Arrays.asList(accountMap), "currencyConversionToEUR", null, null);
+        execute(Arrays.asList(accountMap), "currency conversion to USD", null, null);
 
-        assertEquals("EUR", accountMap.get("currency"));
-        assertEquals(new BigDecimal("780.000"), accountMap.get("balance"));
+        assertEquals("USD", accountMap.get("currency"));
+        assertEquals(new BigDecimal("1282.000"), accountMap.get("balance"));
     }
 
-    // @extract-end
-
-//    @Test
-    public void unknownCurrency() throws Exception {
+    @Test
+    public void unknownCurrencyToUSD() throws Exception {
         Map<String, String> accountMap = newHashMap();
         accountMap.put("_type_", "Account");
         accountMap.put("currency", "unknown");
-        accountMap.put("balance", "1000");
+        accountMap.put("balance", "2345");
 
-        ExecutionResults results = execute(Arrays.asList(accountMap), "unknownCurrency", null, null);
-
+        ExecutionResults results = execute(Arrays.asList(accountMap), "unknown currency if no USD", null, null);
         assertEquals("unknown", accountMap.get("currency"));
-        assertEquals("1000", accountMap.get("balance"));
-        reportContextContains(results, "unknownCurrency", accountMap);
+        assertEquals("2345", accountMap.get("balance"));
+        reportContextContains(results, "unknown currency if no USD", accountMap);
+
     }
+
+    @Test
+    public void nocurrencyToUSD() throws Exception {
+        Map<String, String> accountMap = newHashMap();
+        accountMap.put("_type_", "Account");
+
+        execute(Arrays.asList(accountMap), "no currency to USD", null, null);
+
+        assertEquals("USD", accountMap.get("currency"));
+    }
+
+    // @Test
+    // public void nocurrencyToEUR() throws Exception {
+    // Map<String, String> accountMap = newHashMap();
+    // accountMap.put("_type_", "Account");
+    //
+    // execute(Arrays.asList(accountMap), "noCurrencyToEUR", null, null);
+    //
+    // assertEquals("EUR", accountMap.get("currency"));
+    // }
+
+    // @extract-start 03 16
+    // @Test
+    // public void currencyConversionToEUR() throws Exception {
+    // Map<String, String> accountMap = newHashMap();
+    // accountMap.put("_type_", "Account");
+    // accountMap.put("currency", "USD");
+    // accountMap.put("balance", "1000");
+    //
+    // execute(Arrays.asList(accountMap), "currencyConversionToEUR", null, null);
+    //
+    // assertEquals("EUR", accountMap.get("currency"));
+    // assertEquals(new BigDecimal("780.000"), accountMap.get("balance"));
+    // }
+
+    // @extract-end
+
+    // @Test
+    // public void unknownCurrency() throws Exception {
+    // Map<String, String> accountMap = newHashMap();
+    // accountMap.put("_type_", "Account");
+    // accountMap.put("currency", "unknown");
+    // accountMap.put("balance", "1000");
+    //
+    // ExecutionResults results = execute(Arrays.asList(accountMap), "unknownCurrency", null, null);
+    //
+    // assertEquals("unknown", accountMap.get("currency"));
+    // assertEquals("1000", accountMap.get("balance"));
+    // reportContextContains(results, "unknownCurrency", accountMap);
+    // }
 
     // @extract-start 03 20
     /**
@@ -259,7 +297,7 @@ public class DataTransformationTest {
     // @extract-end
 
     // @extract-start 03 19
-//    @Test
+    @Test
     public void reduceLegacyAccounts() throws Exception {
         Map<String, Object> accountMap1 = newHashMap();
         accountMap1.put("_type_", "Account");
@@ -271,7 +309,7 @@ public class DataTransformationTest {
         accountMap2.put("customer_id", "00123");
         accountMap2.put("balance", new BigDecimal("300.00"));
 
-        ExecutionResults results = execute(Arrays.asList(accountMap1, accountMap2), "reduceLegacyAccounts", "Account",
+        ExecutionResults results = execute(Arrays.asList(accountMap1, accountMap2), "reduce legacy accounts", "Account",
                 "accounts");
 
         Iterator<?> accountIterator = ((List<?>) results.getValue("accounts")).iterator();
@@ -299,7 +337,7 @@ public class DataTransformationTest {
     // @extract-end
 
     // @extract-start 03 22
-//    @Test
+    // @Test
     public void findAddress() throws Exception {
         final Map<String, Object> customerMap = newHashMap();
         customerMap.put("_type_", "Customer");
