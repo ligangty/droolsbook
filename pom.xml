@@ -18,6 +18,7 @@
     <module>core</module>
     <module>validation</module>
     <module>transform</module>
+    <module>dsl</module>
   </modules>
 
   <dependencyManagement>

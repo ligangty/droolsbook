@@ -42,11 +42,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 public class ValidationTest {
-    KieSession session;
-    ReportFactory reportFactory;
+    protected KieSession session;
+    protected ReportFactory reportFactory;
 
     @Before
-    public void setUpClass() throws Exception {
+    public void setUp() throws Exception {
         KieServices kieServices = KieServices.Factory.get();
         KieResources kieResources = kieServices.getResources();
         KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
