@@ -1,4 +1,4 @@
-package com.github.ligangty.droolstest.bank.service.impl;
+package com.github.ligangty.droolstest.bank.transform.dsl;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -12,13 +12,12 @@ import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.conf.SequentialOption;
 
-import com.github.ligangty.droolstest.bank.service.BankingInquiryService;
-import com.github.ligangty.droolstest.bank.service.BankingInquiryServiceImpl;
 import com.github.ligangty.droolstest.bank.service.DefaultReportFactory;
 import com.github.ligangty.droolstest.bank.utils.TrackingAgendaEventListener;
-import com.github.ligangty.droolstest.bank.validation.ValidationTest;
+import com.github.ligangty.droolstest.transform.service.DataTransformationTest;
+import com.github.ligangty.droolstest.transform.service.MockLegacyBankService;
 
-public class DslValidationTest extends ValidationTest{
+public class DslMockRulesTest extends DataTransformationTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         KieServices kieServices = KieServices.Factory.get();
@@ -28,8 +27,8 @@ public class DslValidationTest extends ValidationTest{
 
         // path has to start with src/main/resources
         // append it with the package from the rule
-        kieFileSystem.write("src/main/resources/validation.dslr", kieResources.newClassPathResource("validation.dslr"));
-        kieFileSystem.write("src/main/resources/validation.dsl", kieResources.newClassPathResource("validation.dsl"));
+        kieFileSystem.write("src/main/resources/transform.dslr", kieResources.newClassPathResource("transform.dslr"));
+        kieFileSystem.write("src/main/resources/transform.dsl", kieResources.newClassPathResource("transform.dsl"));
 
         KieBuilder kb = kieServices.newKieBuilder(kieFileSystem);
         kb.buildAll();
@@ -44,31 +43,27 @@ public class DslValidationTest extends ValidationTest{
         session = kContainer.newKieBase(configuration).newStatelessKieSession();
         session.addEventListener(new TrackingAgendaEventListener());
 
-        BankingInquiryService inquiryService = new BankingInquiryServiceImpl();
         reportFactory = new DefaultReportFactory();
 
         session.setGlobal("reportFactory", reportFactory);
-        session.setGlobal("inquiryService", inquiryService);
+        session.setGlobal("legacyService", new MockLegacyBankService());
     }
 
-    @Ignore("Not implemented yet")
+    @Ignore("not implemented yet")
     @Override
-    public void accountBalanceAtLeast(){
-    }
-
-    @Ignore("Not implemented yet")
-    public void studentAccountCustomerAgeLessThan() {
-    }
-
-    @Ignore("Not implemented yet")
-    @Override
-    public void accountNumberUnique() {
+    public void currencyConversionToUSD() throws Exception {
     }
     
     @Ignore("some error need to check")
     @Override
-    public void studentAccountCustomerAgeLessThan4() {
-      //TODO: need to check why failed
+    public void twoEqualAddressesDifferentInstance() throws Exception {
+        //TODO: need to check why failed
+    }
+    
+    @Ignore("some error need to check")
+    @Override
+    public void reduceLegacyAccounts() throws Exception {
+        //TODO: need to check why failed
     }
 
 }

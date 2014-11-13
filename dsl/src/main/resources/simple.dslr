@@ -1,6 +1,6 @@
 // @extract-start 04 01
-package droolsbook.dsl;
-import droolsbook.bank.model.*;
+package com.github.ligangty.droolstest.dsl;
+import com.github.ligangty.droolstest.bank.model.*;
 expander simple.dsl
 rule "hello rule"
   when

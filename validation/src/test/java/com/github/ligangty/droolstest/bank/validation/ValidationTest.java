@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.joda.time.DateMidnight;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -24,7 +24,7 @@ import org.kie.api.command.Command;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
 
 import com.github.ligangty.droolstest.bank.model.Account;
@@ -42,11 +42,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 public class ValidationTest {
-    protected KieSession session;
-    protected ReportFactory reportFactory;
+    protected static StatelessKieSession session;
+    protected static ReportFactory reportFactory;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
         KieServices kieServices = KieServices.Factory.get();
         KieResources kieResources = kieServices.getResources();
         KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
@@ -64,7 +64,7 @@ public class ValidationTest {
         }
         KieContainer kContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
 
-        session = kContainer.newKieSession();
+        session = kContainer.newStatelessKieSession();
         session.addEventListener(new TrackingAgendaEventListener());
 
         BankingInquiryService inquiryService = new BankingInquiryServiceImpl();
@@ -211,7 +211,6 @@ public class ValidationTest {
         commands.add(CommandFactory.newSetGlobal("validationReport", report));
         commands.add(CommandFactory.newInsertElements(getFacts(customer)));
         session.execute(CommandFactory.newBatchExecution(commands));
-        session.fireAllRules();
         return report;
     }
 

@@ -1,0 +1,53 @@
+package com.github.ligangty.droolstest.dsl;
+
+import com.github.ligangty.droolstest.bank.model.*;
+import com.github.ligangty.droolstest.bank.service.*;
+
+import function com.github.ligangty.droolstest.bank.service.ValidationHelper.*;
+
+global ValidationReport validationReport;
+global ReportFactory reportFactory;
+global BankingInquiryService inquiryService;
+
+expander validation.dsl
+/*
+#rule simpleRule
+#	when
+#		There is a Customer with phone number of "02-111-33333333"	
+#	then
+#		Log : "02 111 333 is in the rule session."	
+#end
+*/
+
+//rule "address is required"
+rule "address required rule"
+	when
+		The Customer
+		- has no address
+	then
+		Display warning	
+end
+
+/*
+#- addressRequired : when The Customer does not have address 
+#					then Display warning	
+*/
+
+//rule "phone number is required"
+rule "phone number required"
+	when
+		The Customer
+		- has no phone number or it is blank
+	then
+		Display error
+end
+
+// rule "account owner is required"
+rule "account owner required"
+	when
+		The Account
+		- has no owner
+	then		
+		Display error for Account
+end
+ 

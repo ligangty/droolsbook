@@ -2,7 +2,7 @@ package com.github.ligangty.droolstest.transform.service;
 
 import java.io.Reader;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.KieBase;
 
@@ -14,10 +14,10 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
 public class ETLBankServiceImplTest {
 
-    DataTransformationServiceImpl etlBankService;
+    static DataTransformationServiceImpl etlBankService;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         Reader reader = Resources.getResourceAsReader("SqlMapConfig.xml");
         SqlMapClient sqlMapClient = SqlMapClientBuilder.buildSqlMapClient(reader);
         reader.close();

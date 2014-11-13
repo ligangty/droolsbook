@@ -17,14 +17,15 @@ import org.drools.core.base.RuleNameEqualsAgendaFilter;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.command.runtime.rule.GetObjectsCommand;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.api.runtime.ExecutionResults;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
 
 import com.github.ligangty.droolstest.bank.model.Address;
@@ -36,17 +37,17 @@ import com.github.ligangty.droolstest.bank.utils.DroolsHelper;
 import com.github.ligangty.droolstest.bank.utils.TrackingAgendaEventListener;
 
 public class DataTransformationTest {
-    static KieSession session;
-    static ReportFactory reportFactory;
+    protected static StatelessKieSession session;
+    protected static ReportFactory reportFactory;
 
-    static KieBase kieBase;
+    protected static KieBase kieBase;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
         kieBase = DroolsHelper.createKieBase("rules/transform.drl", "src/main/resources/rules/transform.drl");
 
         // @extract-start 03 09
-        session = kieBase.newKieSession();
+        session = kieBase.newStatelessKieSession();
         session.setGlobal("legacyService", new MockLegacyBankService());
         // @extract-end
 

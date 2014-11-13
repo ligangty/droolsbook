@@ -30,8 +30,27 @@
       </dependency>
       <dependency>
         <groupId>com.github.ligangty.droolstest</groupId>
+        <artifactId>droolstest-transform</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.ligangty.droolstest</groupId>
+        <artifactId>droolstest-transform</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.github.ligangty.droolstest</groupId>
         <artifactId>droolstest-validation</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.ligangty.droolstest</groupId>
+        <artifactId>droolstest-validation</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.jbpm</groupId>

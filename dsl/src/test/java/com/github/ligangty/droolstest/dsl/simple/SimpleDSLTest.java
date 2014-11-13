@@ -63,6 +63,7 @@ public class SimpleDSLTest {
         Customer customer = new Customer();
         customer.setFirstName("Daaa");
         session.execute(CommandFactory.newInsert(customer));
+        session.fireAllRules();
     }
 
     @SuppressWarnings("unchecked")
@@ -72,6 +73,7 @@ public class SimpleDSLTest {
         Customer customer = new Customer();
         customer.setFirstName("David");
         session.execute(CommandFactory.newInsert(customer));
+        session.fireAllRules();
     }
 
 }

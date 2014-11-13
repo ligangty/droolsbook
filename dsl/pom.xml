@@ -21,6 +21,22 @@
       <artifactId>droolstest-validation</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.github.ligangty.droolstest</groupId>
+      <artifactId>droolstest-validation</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ligangty.droolstest</groupId>
+      <artifactId>droolstest-transform</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ligangty.droolstest</groupId>
+      <artifactId>droolstest-transform</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-bpmn2</artifactId>
     </dependency>

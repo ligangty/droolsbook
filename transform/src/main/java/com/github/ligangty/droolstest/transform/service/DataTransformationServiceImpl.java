@@ -10,7 +10,7 @@ import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
-import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.command.CommandFactory;
@@ -33,11 +33,11 @@ public class DataTransformationServiceImpl implements DataTransformationService 
     private KieBase kieBase;
     private ReportFactory reportFactory;
     private BankingService bankingService;
-    private KieSession session;
+    private StatelessKieSession session;
 
     @SuppressWarnings("unchecked")
     public void etl() {
-        session = kieBase.newKieSession();
+        session = kieBase.newStatelessKieSession();
         session.setGlobal("legacyService", legacyBankService);
         session.setGlobal("reportFactory", reportFactory);
 
