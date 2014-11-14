@@ -16,7 +16,7 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 public class ETLBankServiceImplTest {
 
     static DataTransformationServiceImpl etlBankService;
-    static KieHelper kieHelper = new KieHelper();
+    static KieHelper kieHelper = KieHelper.newHelper();
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -39,26 +39,10 @@ import com.google.common.collect.Sets;
 public class ValidationTest {
     protected static StatelessKieSession session;
     protected static ReportFactory reportFactory;
-    protected static KieHelper kieHelper = new KieHelper();
+    protected static KieHelper kieHelper = KieHelper.newHelper();
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        // KieServices kieServices = KieServices.Factory.get();
-        // KieResources kieResources = kieServices.getResources();
-        // KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
-        // KieRepository kieRepository = kieServices.getRepository();
-        //
-        // Resource resource = kieResources.newClassPathResource("rules/validation.drl");
-        // // path has to start with src/main/resources
-        // // append it with the package from the rule
-        // kieFileSystem.write("src/main/resources/file/1.drl", resource);
-        //
-        // KieBuilder kb = kieServices.newKieBuilder(kieFileSystem);
-        // kb.buildAll();
-        // if (kb.getResults().hasMessages(Level.ERROR)) {
-        // throw new RuntimeException("Build Errors:\n" + kb.getResults().toString());
-        // }
-        // KieContainer kContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
         KieBaseOption[] options = null;
         KieBase kieBase = kieHelper.addFromClassPath("rules/validation.drl", ValidationTest.class.getClassLoader()).build(
                 options);

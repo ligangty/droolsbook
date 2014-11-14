@@ -37,10 +37,11 @@ import com.github.ligangty.droolstest.bank.service.ValidationReport;
 import com.github.ligangty.droolstest.bank.utils.KieHelper;
 import com.github.ligangty.droolstest.bank.utils.TrackingAgendaEventListener;
 
+@SuppressWarnings("unchecked")
 public class DataTransformationTest {
     protected static StatelessKieSession session;
     protected static ReportFactory reportFactory;
-    protected static KieHelper kieHelper = new KieHelper();
+    protected static KieHelper kieHelper = KieHelper.newHelper();
 
     protected static KieBase kieBase;
 
@@ -125,7 +126,6 @@ public class DataTransformationTest {
                 "Address", "addresses");
 
         Iterator<?> addressIterator = ((List<?>) results.getValue("addresses")).iterator();
-        @SuppressWarnings("unchecked")
         Map<String, String> addressMapWinner = (Map<String, String>) addressIterator.next();
         assertEquals(addressMap1, addressMapWinner);
         assertFalse(addressIterator.hasNext());
@@ -318,7 +318,6 @@ public class DataTransformationTest {
                 "accounts");
 
         Iterator<?> accountIterator = ((List<?>) results.getValue("accounts")).iterator();
-        @SuppressWarnings("unchecked")
         Map<String, Object> accountMap = (Map<String, Object>) accountIterator.next();
         assertEquals(new BigDecimal("400.00"), accountMap.get("balance"));
         assertFalse(accountIterator.hasNext());

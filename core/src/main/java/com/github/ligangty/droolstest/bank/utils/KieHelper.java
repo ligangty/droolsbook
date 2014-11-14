@@ -23,6 +23,10 @@ public class KieHelper {
     public final KieFileSystem kfs = ks.newKieFileSystem();
 
     private int counter = 0;
+    
+    public static final KieHelper newHelper(){
+        return new KieHelper();
+    }
 
     public KieBase build(KieBaseOption... options) {
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
