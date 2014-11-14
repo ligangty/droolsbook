@@ -134,8 +134,8 @@ public class DataTransformationServiceImpl implements DataTransformationService 
         this.legacyBankService = legacyBankService;
     }
 
-    public void setKnowledgeBase(KieBase knowledgeBase) {
-        this.kieBase = knowledgeBase;
+    public void setKieBase(KieBase kieBase) {
+        this.kieBase = kieBase;
     }
 
     public void setReportFactory(ReportFactory reportFactory) {

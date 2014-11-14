@@ -17,12 +17,11 @@ import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * @deprecated use {@link com.github.ligangty.droolstest.bank.utils.KieHelper} instead
  */
+@Deprecated
 public class DroolsHelper {
 
     public static KieBase createKieBase(String ruleFileClassPath, String ruleFilePath) throws DroolsParserException,
@@ -56,7 +55,5 @@ public class DroolsHelper {
 
         return config == null ? kContainer.getKieBase() : kContainer.newKieBase(config);
     }
-    
-   
 
 }

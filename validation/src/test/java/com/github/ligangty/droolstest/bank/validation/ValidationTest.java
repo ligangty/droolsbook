@@ -15,15 +15,9 @@ import java.util.List;
 import org.joda.time.DateMidnight;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieRepository;
-import org.kie.api.builder.Message.Level;
+import org.kie.api.KieBase;
 import org.kie.api.command.Command;
-import org.kie.api.io.KieResources;
-import org.kie.api.io.Resource;
-import org.kie.api.runtime.KieContainer;
+import org.kie.api.conf.KieBaseOption;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.command.CommandFactory;
 
@@ -36,6 +30,7 @@ import com.github.ligangty.droolstest.bank.service.DefaultReportFactory;
 import com.github.ligangty.droolstest.bank.service.Message;
 import com.github.ligangty.droolstest.bank.service.ReportFactory;
 import com.github.ligangty.droolstest.bank.service.ValidationReport;
+import com.github.ligangty.droolstest.bank.utils.KieHelper;
 import com.github.ligangty.droolstest.bank.utils.TrackingAgendaEventListener;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -44,27 +39,31 @@ import com.google.common.collect.Sets;
 public class ValidationTest {
     protected static StatelessKieSession session;
     protected static ReportFactory reportFactory;
+    protected static KieHelper kieHelper = new KieHelper();
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        KieServices kieServices = KieServices.Factory.get();
-        KieResources kieResources = kieServices.getResources();
-        KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
-        KieRepository kieRepository = kieServices.getRepository();
+        // KieServices kieServices = KieServices.Factory.get();
+        // KieResources kieResources = kieServices.getResources();
+        // KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
+        // KieRepository kieRepository = kieServices.getRepository();
+        //
+        // Resource resource = kieResources.newClassPathResource("rules/validation.drl");
+        // // path has to start with src/main/resources
+        // // append it with the package from the rule
+        // kieFileSystem.write("src/main/resources/file/1.drl", resource);
+        //
+        // KieBuilder kb = kieServices.newKieBuilder(kieFileSystem);
+        // kb.buildAll();
+        // if (kb.getResults().hasMessages(Level.ERROR)) {
+        // throw new RuntimeException("Build Errors:\n" + kb.getResults().toString());
+        // }
+        // KieContainer kContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
+        KieBaseOption[] options = null;
+        KieBase kieBase = kieHelper.addFromClassPath("rules/validation.drl", ValidationTest.class.getClassLoader()).build(
+                options);
 
-        Resource resource = kieResources.newClassPathResource("rules/validation.drl");
-        // path has to start with src/main/resources
-        // append it with the package from the rule
-        kieFileSystem.write("src/main/resources/rules/validation.drl", resource);
-
-        KieBuilder kb = kieServices.newKieBuilder(kieFileSystem);
-        kb.buildAll();
-        if (kb.getResults().hasMessages(Level.ERROR)) {
-            throw new RuntimeException("Build Errors:\n" + kb.getResults().toString());
-        }
-        KieContainer kContainer = kieServices.newKieContainer(kieRepository.getDefaultReleaseId());
-
-        session = kContainer.newStatelessKieSession();
+        session = kieBase.newStatelessKieSession();
         session.addEventListener(new TrackingAgendaEventListener());
 
         BankingInquiryService inquiryService = new BankingInquiryServiceImpl();

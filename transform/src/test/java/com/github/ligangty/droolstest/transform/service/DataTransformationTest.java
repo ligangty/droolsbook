@@ -22,6 +22,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
+import org.kie.api.conf.KieBaseOption;
 import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.ObjectFilter;
@@ -33,18 +34,21 @@ import com.github.ligangty.droolstest.bank.service.DefaultReportFactory;
 import com.github.ligangty.droolstest.bank.service.Message;
 import com.github.ligangty.droolstest.bank.service.ReportFactory;
 import com.github.ligangty.droolstest.bank.service.ValidationReport;
-import com.github.ligangty.droolstest.bank.utils.DroolsHelper;
+import com.github.ligangty.droolstest.bank.utils.KieHelper;
 import com.github.ligangty.droolstest.bank.utils.TrackingAgendaEventListener;
 
 public class DataTransformationTest {
     protected static StatelessKieSession session;
     protected static ReportFactory reportFactory;
+    protected static KieHelper kieHelper = new KieHelper();
 
     protected static KieBase kieBase;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        kieBase = DroolsHelper.createKieBase("rules/transform.drl", "src/main/resources/rules/transform.drl");
+        KieBaseOption[] options = null;
+        KieBase kieBase = kieHelper.addFromClassPath("rules/transform.drl", DataTransformationTest.class.getClassLoader())
+                .build(options);
 
         // @extract-start 03 09
         session = kieBase.newStatelessKieSession();
