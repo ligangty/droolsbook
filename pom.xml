@@ -20,6 +20,7 @@
         <module>transform</module>
         <module>dsl</module>
         <module>dt</module>
+        <module>ruleflow</module>
     </modules>
 
     <dependencyManagement>
