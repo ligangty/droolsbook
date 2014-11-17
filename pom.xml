@@ -19,6 +19,7 @@
         <module>validation</module>
         <module>transform</module>
         <module>dsl</module>
+        <module>dt</module>
     </modules>
 
     <dependencyManagement>

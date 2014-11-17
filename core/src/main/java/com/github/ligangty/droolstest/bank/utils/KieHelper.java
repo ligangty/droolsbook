@@ -1,5 +1,9 @@
 package com.github.ligangty.droolstest.bank.utils;
 
+import static org.kie.api.io.ResourceType.determineResourceType;
+
+import java.io.InputStream;
+
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -12,10 +16,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 
-import java.io.InputStream;
-
-import static org.kie.api.io.ResourceType.determineResourceType;
-
 public class KieHelper {
 
     public final KieServices ks = KieServices.Factory.get();
@@ -23,8 +23,8 @@ public class KieHelper {
     public final KieFileSystem kfs = ks.newKieFileSystem();
 
     private int counter = 0;
-    
-    public static final KieHelper newHelper(){
+
+    public static final KieHelper newHelper() {
         return new KieHelper();
     }
 
@@ -69,7 +69,14 @@ public class KieHelper {
             throw new IllegalArgumentException("The file (" + name + ") does not exist as a classpath resource.");
         }
         ResourceType type = determineResourceType(name);
-        kfs.write(generateResourceName(type), ks.getResources().newInputStreamResource(input, encoding));
+        String resourceExt = determineResourceExtenstion(name);
+        String resourceName = null;
+        if (resourceExt.equals(type.getDefaultExtension())) {
+            resourceName = generateResourceName(type);
+        } else {
+            resourceName = generateResourceName(type, resourceExt);
+        }
+        kfs.write(resourceName, ks.getResources().newInputStreamResource(input, encoding));
         return this;
     }
 
@@ -85,7 +92,20 @@ public class KieHelper {
         return addResource(resource);
     }
 
+    private String determineResourceExtenstion(String resourceName) {
+        String[] resourceToken = resourceName.split("\\.");
+        return resourceToken[resourceToken.length - 1];
+    }
+
     private String generateResourceName(ResourceType type) {
-        return "src/main/resources/file" + counter++ + "." + type.getDefaultExtension();
+        return generateResourceName(type, null);
+    }
+
+    private String generateResourceName(ResourceType type, String otherExtension) {
+        if (otherExtension == null || otherExtension.trim().equals("")) {
+            return "src/main/resources/file" + counter++ + "." + type.getDefaultExtension();
+        } else {
+            return "src/main/resources/file" + counter++ + "." + otherExtension;
+        }
     }
 }
