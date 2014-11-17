@@ -12,7 +12,6 @@ import com.github.ligangty.droolstest.bank.service.BankingInquiryService;
 import com.github.ligangty.droolstest.bank.service.BankingInquiryServiceImpl;
 import com.github.ligangty.droolstest.bank.service.DefaultReportFactory;
 import com.github.ligangty.droolstest.bank.utils.DroolsTestUtil;
-import com.github.ligangty.droolstest.bank.utils.KieHelper;
 import com.github.ligangty.droolstest.bank.validation.ValidationTest;
 
 /**
@@ -26,29 +25,28 @@ public class DecisionTablesValidationTest extends ValidationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+//        method();
         ClassLoader currentLoader = DecisionTablesValidationTest.class.getClassLoader();
-        KieBase kieBase = kieHelper.addFromClassPath("validation.xls", currentLoader).build();
+        KieBase kieBase = kieHelper.addFromClassPath("validation-full.xls", currentLoader).build();
         inquiryService = new BankingInquiryServiceImpl();
         reportFactory = new DefaultReportFactory();
 
         session = kieBase.newStatelessKieSession();
         session.setGlobal("reportFactory", reportFactory);
         session.setGlobal("inquiryService", inquiryService);
-
-        // method();
     }
 
     @SuppressWarnings("unused")
     private static void method() throws Exception {
         DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtconf.setInputType(DecisionTableInputType.XLS);
-        DroolsTestUtil.seeDecisionDrlContent(dtconf, ResourceFactory.newClassPathResource("validation.xls"));
+        DroolsTestUtil.seeDecisionDrlContent(dtconf, ResourceFactory.newClassPathResource("validation-full.xls"));
     }
 
-    @Ignore("Not implemented yet")
-    @Override
-    public void accountBalanceAtLeast() {
-    }
+//    @Ignore("Not implemented yet")
+//    @Override
+//    public void accountBalanceAtLeast() {
+//    }
 
     @Ignore("Not implemented yet")
     @Override
@@ -70,13 +68,13 @@ public class DecisionTablesValidationTest extends ValidationTest {
     public void studentAccountCustomerAgeLessThan4() {
     }
 
-    @Ignore("Not implemented yet")
-    @Override
-    public void accountNumberUnique() {
-    }
+//    @Ignore("Not implemented yet")
+//    @Override
+//    public void accountNumberUnique() {
+//    }
 
-    @Ignore("Not implemented yet")
-    @Override
-    public void accountOwnerRequired() {
-    }
+//    @Ignore("Not implemented yet")
+//    @Override
+//    public void accountOwnerRequired() {
+//    }
 }

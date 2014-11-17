@@ -71,7 +71,7 @@ public class KieHelper {
         ResourceType type = determineResourceType(name);
         String resourceExt = determineResourceExtenstion(name);
         String resourceName = null;
-        if (resourceExt.equals(type.getDefaultExtension())) {
+        if (resourceExt != null && resourceExt.equals(type.getDefaultExtension())) {
             resourceName = generateResourceName(type);
         } else {
             resourceName = generateResourceName(type, resourceExt);
