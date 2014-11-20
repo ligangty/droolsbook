@@ -61,22 +61,22 @@ public class ValidationTest {
     public void addressRequired() {
         Customer customer = createCustomerBasic();
         assertNull(customer.getAddress());
-        assertReportContains(Message.Type.WARNING, "address required rule", customer);
+        assertReportContains(Message.Type.WARNING, "addressRequired", customer);
 
         customer = createCustomerBasic();
         customer.setAddress(new Address());
-        assertNotReportContains(Message.Type.WARNING, "address required rule", customer);
+        assertNotReportContains(Message.Type.WARNING, "addressRequired", customer);
     }
 
     @Test
     public void phoneNumberRequired() {
         Customer customer = createCustomerBasic();
         assertNull(customer.getPhoneNumber());
-        assertReportContains(Message.Type.ERROR, "phone number required", customer);
+        assertReportContains(Message.Type.ERROR, "phoneNumberRequired", customer);
 
         customer = createCustomerBasic();
         customer.setPhoneNumber("1234567");
-        assertNotReportContains(Message.Type.ERROR, "phone number required", customer);
+        assertNotReportContains(Message.Type.ERROR, "phoneNumberRequired", customer);
     }
 
     @Test
@@ -84,12 +84,12 @@ public class ValidationTest {
         Customer customer = createCustomerBasic();
         Account account = new Account();
         customer.setAccounts(Sets.newHashSet(account));
-        assertReportContains(Message.Type.ERROR, "account owner required", customer, account);
+        assertReportContains(Message.Type.ERROR, "accountOwnerRequired", customer, account);
 
         customer = createCustomerBasic();
         account = customer.getAccounts().iterator().next();
         assertNotNull(account.getOwner());
-        assertNotReportContains(Message.Type.ERROR, "account owner required", customer);
+        assertNotReportContains(Message.Type.ERROR, "accountOwnerRequired", customer);
 
     }
 
@@ -99,17 +99,17 @@ public class ValidationTest {
         Account account = customer.getAccounts().iterator().next();
         assertNotNull(account.getOwner());
         assertEquals(BigDecimal.ZERO, account.getBalance());
-        assertReportContains(Message.Type.WARNING, "account balance at least", customer, account);
+        assertReportContains(Message.Type.WARNING, "accountBalanceAtLeast", customer, account);
 
         customer = createCustomerBasic();
         account = customer.getAccounts().iterator().next();
         account.setBalance(BigDecimal.valueOf(54.00));
-        assertReportContains(Message.Type.WARNING, "account balance at least", customer, account);
+        assertReportContains(Message.Type.WARNING, "accountBalanceAtLeast", customer, account);
 
         customer = createCustomerBasic();
         account = customer.getAccounts().iterator().next();
         account.setBalance(BigDecimal.valueOf(100.00));
-        assertNotReportContains(Message.Type.WARNING, "account balance at least", customer, account);
+        assertNotReportContains(Message.Type.WARNING, "accountBalanceAtLeast", customer, account);
     }
 
     @Test
@@ -119,7 +119,7 @@ public class ValidationTest {
         Account account = customer.getAccounts().iterator().next();
         customer.setDateOfBirth(NOW.minusYears(40).toDate());
         assertEquals(Account.Type.TRANSACTIONAL, account.getType());
-        assertNotReportContains(Message.Type.ERROR, "student account customer age less than rule", customer, account);
+        assertNotReportContains(Message.Type.ERROR, "studentAccountCustomerAgeLessThan", customer, account);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class ValidationTest {
         customer.setDateOfBirth(NOW.minusYears(20).toDate());
         Account account = customer.getAccounts().iterator().next();
         account.setType(Account.Type.STUDENT);
-        assertNotReportContains(Message.Type.ERROR, "student account customer age less than rule", customer, account);
+        assertNotReportContains(Message.Type.ERROR, "studentAccountCustomerAgeLessThan", customer, account);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class ValidationTest {
         Account account = customer.getAccounts().iterator().next();
         customer.setDateOfBirth(NOW.minusYears(20).toDate());
         account.setType(Account.Type.TRANSACTIONAL);
-        assertNotReportContains(Message.Type.ERROR, "student account customer age less than rule", customer);
+        assertNotReportContains(Message.Type.ERROR, "studentAccountCustomerAgeLessThan", customer);
     }
 
     @Test
@@ -149,7 +149,7 @@ public class ValidationTest {
         Account account = customer.getAccounts().iterator().next();
         customer.setDateOfBirth(NOW.minusYears(40).toDate());
         account.setType(Account.Type.STUDENT);
-        assertReportContains(Message.Type.ERROR, "student account customer age less than rule", customer, account);
+        assertReportContains(Message.Type.ERROR, "studentAccountCustomerAgeLessThan", customer, account);
     }
 
     @Test
@@ -162,7 +162,7 @@ public class ValidationTest {
                 return false;
             }
         });
-        assertReportContains(Message.Type.ERROR, "account number unique", customer, account);
+        assertReportContains(Message.Type.ERROR, "accountNumberUnique", customer, account);
 
         session.setGlobal("inquiryService", new BankingInquiryService() {
             @Override
@@ -171,17 +171,17 @@ public class ValidationTest {
             }
         });
 
-        assertNotReportContains(Message.Type.ERROR, "account number unique", customer, account);
+        assertNotReportContains(Message.Type.ERROR, "accountNumberUnique", customer, account);
     }
 
-    private void assertReportContains(Message.Type type, String messageKey, Customer customer, Object... context) {
+    protected void assertReportContains(Message.Type type, String messageKey, Customer customer, Object... context) {
         ValidationReport report = executeRules(type, messageKey, customer, context);
         assertTrue("Report doesn't contain message [" + messageKey + "]", report.contains(messageKey));
         Message message = getMessage(report, messageKey);
         assertEquals(Arrays.asList(context), message.getContextOrdered());
     }
 
-    private void assertNotReportContains(Message.Type type, String messageKey, Customer customer, Object... context) {
+    protected void assertNotReportContains(Message.Type type, String messageKey, Customer customer, Object... context) {
         ValidationReport report = executeRules(type, messageKey, customer, context);
         assertFalse("Report contains message [" + messageKey + "]", report.contains(messageKey));
         assertNull(getMessage(report, messageKey));
@@ -205,7 +205,7 @@ public class ValidationTest {
         return facts;
     }
 
-    private Message getMessage(ValidationReport report, String messageKey) {
+    protected Message getMessage(ValidationReport report, String messageKey) {
         final String inMessageKey = messageKey;
         return Iterables.tryFind(report.getMessages(), new Predicate<Message>() {
             @Override

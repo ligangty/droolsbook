@@ -21,6 +21,7 @@
         <module>dsl</module>
         <module>dt</module>
         <module>ruleflow</module>
+        <module>stateful</module>
     </modules>
 
     <dependencyManagement>

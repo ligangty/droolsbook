@@ -20,7 +20,7 @@ expander validation.dsl
 */
 
 //rule "address is required"
-rule "address required rule"
+rule "addressRequired"
 	when
 		The Customer
 		- has no address
@@ -34,7 +34,7 @@ end
 */
 
 //rule "phone number is required"
-rule "phone number required"
+rule "phoneNumberRequired"
 	when
 		The Customer
 		- has no phone number or it is blank
@@ -43,7 +43,7 @@ rule "phone number required"
 end
 
 // rule "account owner is required"
-rule "account owner required"
+rule "accountOwnerRequired"
 	when
 		The Account
 		- has no owner

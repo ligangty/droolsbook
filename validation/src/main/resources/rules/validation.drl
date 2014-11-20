@@ -21,35 +21,35 @@ global ReportFactory reportFactory;
 global BankingInquiryService inquiryService;
 
 //rules
-rule "address required rule"
+rule "addressRequired"
     when
         Customer( address == null );
     then
         warning(kcontext);
 end
 
-rule "phone number required"
+rule "phoneNumberRequired"
     when 
     	Customer( phoneNumber==null||=="" )
     then 
     	error(kcontext);
 end
 
-rule "account owner required"
+rule "accountOwnerRequired"
     when 
         $account : Account( owner==null )
     then 
         error(kcontext, $account);
 end
 
-rule "account balance at least"
+rule "accountBalanceAtLeast"
     when
     	$account : Account( balance < 100 )
     then 
     	warning(kcontext, $account);
 end 
 
-rule "student account customer age less than rule"
+rule "studentAccountCustomerAgeLessThan"
     when 
        Customer( eval(yearsPassedSince(dateOfBirth) >= 27) )
        $account : Account( type == Account.Type.STUDENT)
@@ -57,7 +57,7 @@ rule "student account customer age less than rule"
        error(kcontext, $account);
 end
 
-rule "account number unique"
+rule "accountNumberUnique"
     when 
     	$account : Account ( eval( !inquiryService.isAccountNumberUnique($account) ) )
     then
