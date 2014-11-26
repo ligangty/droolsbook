@@ -1,18 +1,18 @@
-package droolsbook.cep
+package com.github.ligangty.droolstest.cep
 
-import droolsbook.cep.bank.model.TransactionCreatedEvent
-import droolsbook.cep.bank.model.AccountUpdatedEvent
-import droolsbook.cep.bank.model.Account
-import droolsbook.cep.bank.model.LostCardEvent
-import droolsbook.cep.bank.model.SuspiciousAccount
-import droolsbook.cep.bank.model.SuspiciousTransaction
-import droolsbook.cep.bank.model.TransactionEvent
-import droolsbook.cep.bank.model.TransactionCompletedEvent
-import droolsbook.cep.bank.model.SuspiciousAccount.SuspiciousAccountSeverity
-import droolsbook.cep.bank.model.SuspiciousTransaction.SuspiciousTransactionSeverity
-import droolsbook.bank.model.Address
-import droolsbook.bank.model.Customer
-import droolsbook.bank.model.Transaction
+import com.github.ligangty.droolstest.cep.bank.model.TransactionCreatedEvent
+import com.github.ligangty.droolstest.cep.bank.model.AccountUpdatedEvent
+import com.github.ligangty.droolstest.cep.bank.model.Account
+import com.github.ligangty.droolstest.cep.bank.model.LostCardEvent
+import com.github.ligangty.droolstest.cep.bank.model.SuspiciousAccount
+import com.github.ligangty.droolstest.cep.bank.model.SuspiciousTransaction
+import com.github.ligangty.droolstest.cep.bank.model.TransactionEvent
+import com.github.ligangty.droolstest.cep.bank.model.TransactionCompletedEvent
+import com.github.ligangty.droolstest.cep.bank.model.SuspiciousAccount.SuspiciousAccountSeverity
+import com.github.ligangty.droolstest.cep.bank.model.SuspiciousTransaction.SuspiciousTransactionSeverity
+import com.github.ligangty.droolstest.bank.model.Address
+import com.github.ligangty.droolstest.bank.model.Customer
+import com.github.ligangty.droolstest.bank.model.Transaction
 
 import java.util.List
 import java.math.BigDecimal
@@ -148,6 +148,8 @@ java.lang.RuntimeException: Rule Compilation error : [Rule name='averageBalanceO
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
 	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
 */
+
+import accumulate com.github.ligangty.droolstest.accumulator.BigDecimalAverageAccumulateFunction bigDecimalAverage;
 rule averageBalanceOver30Days
 //no-loop true
   when
@@ -301,6 +303,8 @@ query averageBalanceWithInterestQuery
     $account : Account( ), average($account.getBalance().multiply($account.getInterestRate())) )
 end
 
+//@TODO: need to check why this rule compiles failed!!!
+/*
 rule blackListToCheck
 	when
 		$transaction : Transaction( accountTo.number in (accountNumberBlackList) )
@@ -308,7 +312,7 @@ rule blackListToCheck
 		$transaction.setStatus(Transaction.Status.DENIED);
 		//.. do something else?		
 end
-
+*/
 
 rule averageAmountOver30Days
 	when

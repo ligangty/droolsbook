@@ -31,11 +31,6 @@ public class DroolsHelper {
 
     public static KieBase createKieBase(KieBaseConfiguration config, String ruleFileClassPath, String ruleFilePath)
             throws DroolsParserException, IOException {
-        return createKieBase(config, null, ruleFileClassPath, ruleFilePath);
-    }
-
-    public static KieBase createKieBase(KieBaseConfiguration config, KnowledgeBuilderConfiguration knowledgeBuilderConfig,
-            String ruleFileClassPath, String ruleFilePath) throws DroolsParserException, IOException {
         KieServices kieServices = KieServices.Factory.get();
         KieResources kieResources = kieServices.getResources();
         KieFileSystem kieFileSystem = kieServices.newKieFileSystem();

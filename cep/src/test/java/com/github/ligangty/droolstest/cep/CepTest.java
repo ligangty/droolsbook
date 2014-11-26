@@ -27,13 +27,10 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
 
 import com.github.ligangty.droolstest.accumulator.BigDecimalAverageAccumulateFunction;
-import com.github.ligangty.droolstest.bank.utils.DroolsHelper;
 import com.github.ligangty.droolstest.bank.utils.KieHelper;
 import com.github.ligangty.droolstest.cep.bank.model.Account;
 import com.github.ligangty.droolstest.cep.bank.model.AccountUpdatedEvent;
@@ -91,16 +88,17 @@ public class CepTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         // @extract-start 06 27
-        KnowledgeBuilderConfiguration builderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        builderConf.setOption(AccumulateFunctionOption.get("bigDecimalAverage", new BigDecimalAverageAccumulateFunction()));
+        // KnowledgeBuilderConfiguration builderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        // builderConf.setOption(AccumulateFunctionOption.get("bigDecimalAverage", new BigDecimalAverageAccumulateFunction()));
         // @extract-end
 
         // @extract-start 06 36
         KieBaseConfiguration config = kieHelper.newKieBaseConfiguration();
         config.setOption(EventProcessingOption.STREAM);
+        
         // @extract-end
 
-        kieBase = DroolsHelper.createKieBase(config, builderConf, "cep.drl", "src/main/resources/cep.drl");
+        kieBase = kieHelper.addFromClassPath("cep.drl", CepTest.class.getClassLoader()).build(config);
     }
 
     // @extract-end

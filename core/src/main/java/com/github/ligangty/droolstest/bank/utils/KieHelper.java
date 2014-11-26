@@ -32,26 +32,31 @@ public class KieHelper {
     public final KieSessionConfiguration newKieSessionConfiguration() {
         return ks.newKieSessionConfiguration();
     }
-    
-    public final KieBaseConfiguration newKieBaseConfiguration(){
+
+    public final KieBaseConfiguration newKieBaseConfiguration() {
         return ks.newKieBaseConfiguration();
     }
 
-    public KieBase build(KieBaseOption... options) {
+    public KieBase build(KieBaseConfiguration config) {
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         Results results = kieBuilder.getResults();
         if (results.hasMessages(Message.Level.ERROR)) {
             throw new RuntimeException(results.getMessages().toString());
         }
         KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        return config == null ? kieContainer.getKieBase() : kieContainer.newKieBase(config);
+    }
+
+    public KieBase build(KieBaseOption... options) {
+        KieBaseConfiguration kieBaseConf = null;
         if (options == null || options.length == 0) {
-            return kieContainer.getKieBase();
+            return build(kieBaseConf);
         }
-        KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration();
+        kieBaseConf = ks.newKieBaseConfiguration();
         for (KieBaseOption option : options) {
             kieBaseConf.setOption(option);
         }
-        return kieContainer.newKieBase(kieBaseConf);
+        return build(kieBaseConf);
     }
 
     public KieHelper addContent(String content, ResourceType type) {
