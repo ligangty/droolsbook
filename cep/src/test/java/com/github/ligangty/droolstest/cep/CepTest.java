@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.RuleNameEqualsAgendaFilter;
 import org.drools.core.time.SessionPseudoClock;
 import org.junit.After;
@@ -24,6 +23,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
@@ -49,7 +49,7 @@ public class CepTest {
     FactHandle accountHandle;
     SessionPseudoClock clock;
     TrackingAgendaEventListener trackingAgendaEventListener;
-    WorkingMemoryEntryPoint entry;
+    EntryPoint entry;
     static KieHelper kieHelper = KieHelper.newHelper();
 
     @Before
@@ -100,7 +100,7 @@ public class CepTest {
         config.setOption(EventProcessingOption.STREAM);
         // @extract-end
 
-        kieBase = DroolsHelper.createKieBase(config, builderConf, "src/main/resources/cep.drl", "cep.drl");
+        kieBase = DroolsHelper.createKieBase(config, builderConf, "cep.drl", "src/main/resources/cep.drl");
     }
 
     // @extract-end
@@ -126,7 +126,7 @@ public class CepTest {
     public void notification() throws Exception {
         session.fireAllRules();
         assertNotSame(Account.Status.BLOCKED, account.getStatus());
-        entry = session.getWorkingMemoryEntryPoint("LostCardStream");
+        entry = session.getEntryPoint("LostCardStream");
         entry.insert(new LostCardEvent(account.getNumber()));
         session.fireAllRules();
         assertSame(Account.Status.BLOCKED, account.getStatus());
@@ -157,7 +157,7 @@ public class CepTest {
     // @extract-start 06 10
     @Test
     public void sequenceOfIncreasingWithdrawals() throws Exception {
-        entry = session.getWorkingMemoryEntryPoint("TransactionStream");
+        entry = session.getEntryPoint("TransactionStream");
         accountInfoFactType.set(accountInfo, "averageBalance", BigDecimal.valueOf(1000));
         session.update(accountInfoHandle, accountInfo);
 
@@ -208,7 +208,7 @@ public class CepTest {
     // @extract-start 06 08
     @Test
     public void twoLargeWithdrawals() throws Exception {
-        entry = session.getWorkingMemoryEntryPoint("TransactionStream");
+        entry = session.getEntryPoint("TransactionStream");
         transactionCompletedEvent(400);
         clock.advanceTime(5, TimeUnit.DAYS);
         transactionCompletedEvent(600);
@@ -233,7 +233,7 @@ public class CepTest {
     // @extract-start 06 19
     @Test
     public void averageBalanceOver30Days() throws Exception {
-        entry = session.getWorkingMemoryEntryPoint("AccountStream");
+        entry = session.getEntryPoint("AccountStream");
 
         accountUpdatedEvent(account.getNumber(), 1000.50, 1000.50);
         accountUpdatedEvent(account.getNumber(), -700.40, 300.10);
@@ -352,7 +352,7 @@ public class CepTest {
         }).start();
         // @extract-end
 
-        entry = session.getWorkingMemoryEntryPoint("AccountStream");
+        entry = session.getEntryPoint("AccountStream");
 
         accountUpdatedEvent(account.getNumber(), 1000.50, 1000.50);
         accountUpdatedEvent(account.getNumber(), -700.40, 300.10);
