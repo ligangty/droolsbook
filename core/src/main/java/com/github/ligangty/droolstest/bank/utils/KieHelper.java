@@ -15,6 +15,7 @@ import org.kie.api.conf.KieBaseOption;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSessionConfiguration;
 
 public class KieHelper {
 
@@ -26,6 +27,14 @@ public class KieHelper {
 
     public static final KieHelper newHelper() {
         return new KieHelper();
+    }
+
+    public final KieSessionConfiguration newKieSessionConfiguration() {
+        return ks.newKieSessionConfiguration();
+    }
+    
+    public final KieBaseConfiguration newKieBaseConfiguration(){
+        return ks.newKieBaseConfiguration();
     }
 
     public KieBase build(KieBaseOption... options) {
