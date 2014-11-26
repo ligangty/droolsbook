@@ -22,6 +22,7 @@
         <module>dt</module>
         <module>ruleflow</module>
         <module>stateful</module>
+        <!--<module>cep</module>-->
     </modules>
 
     <dependencyManagement>
