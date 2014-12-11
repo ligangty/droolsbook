@@ -7,7 +7,6 @@ import java.io.ObjectOutput;
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
-import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;

@@ -27,10 +27,8 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
-import org.kie.internal.builder.conf.AccumulateFunctionOption;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
 
-import com.github.ligangty.droolstest.accumulator.BigDecimalAverageAccumulateFunction;
 import com.github.ligangty.droolstest.bank.utils.KieHelper;
 import com.github.ligangty.droolstest.cep.bank.model.Account;
 import com.github.ligangty.droolstest.cep.bank.model.AccountUpdatedEvent;
@@ -142,7 +140,12 @@ public class CepTest {
         account2.setBalance(BigDecimal.valueOf(1400));
         session.insert(account2);
         session.fireAllRules();
-        assertEquals(BigDecimal.valueOf(1200.00), getAverageBalance());
+        
+        Account account3 = new Account();
+        account3.setBalance(BigDecimal.valueOf(2100));
+        session.insert(account3);
+        session.fireAllRules();
+        assertEquals(BigDecimal.valueOf(1500.00), getAverageBalance());
     }
 
     BigDecimal getAverageBalance() {

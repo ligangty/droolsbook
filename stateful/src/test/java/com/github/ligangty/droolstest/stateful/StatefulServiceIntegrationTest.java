@@ -212,6 +212,7 @@ public class StatefulServiceIntegrationTest {
 
         byte[] bArray = baos.toByteArray();
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bArray));
+        @SuppressWarnings("unchecked")
         List<Object> nList = (List<Object>) in.readObject();
         in.close();
         customer = (Customer) nList.get(0);

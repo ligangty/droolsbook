@@ -12,65 +12,12 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 
 // @extract-start 06 25
 public class BigDecimalAverageAccumulateFunction implements AccumulateFunction {
-
-    /**
-     * creates and returns a context object
-     */
-    public Serializable createContext() {
-        return new AverageData();
-    }
-
-    /**
-     * initializes this accumulator
-     */
-    public void init(Serializable context) throws Exception {
-        AverageData data = (AverageData) context;
-        data.count = 0;
-        data.total = BigDecimal.ZERO;
-    }
-
-    /**
-     * @return true if this accumulator supports reverse
-     */
-    public boolean supportsReverse() {
-        return true;
-    }
-
-    /**
-     * accumulate the given value, increases count
-     */
-    public void accumulate(Serializable context, Object value) {
-        AverageData data = (AverageData) context;
-        data.count++;
-        data.total = data.total.add((BigDecimal) value);
-    }
-
-    /**
-     * retracts accumulated amount, decreases count
-     */
-    public void reverse(Serializable context, Object value) throws Exception {
-        AverageData data = (AverageData) context;
-        data.count++;
-        data.total = data.total.subtract((BigDecimal) value);
-    }
-
-    /**
-     * @return currently calculated value
-     */
-    public Object getResult(Serializable context) throws Exception {
-        AverageData data = (AverageData) context;
-        return data.count == 0 ? BigDecimal.ZERO : data.total.divide(BigDecimal.valueOf(data.count), RoundingMode.HALF_UP);
-    }
-
-    // @extract-end
-
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
     }
 
-    // @extract-start 06 26
     /**
      * value holder that stores the total amount and how many numbers were aggregated
      */
@@ -90,10 +37,56 @@ public class BigDecimalAverageAccumulateFunction implements AccumulateFunction {
 
     }
 
-    // @extract-end
+    /**
+     * creates and returns a context object
+     */
+    public Serializable createContext() {
+        return new AverageData();
+    }
+
+    /**
+     * initializes this accumulator
+     */
+    public void init(Serializable context) throws Exception {
+        AverageData data = (AverageData) context;
+        data.count = 0;
+        data.total = BigDecimal.ZERO;
+    }
+
+    /**
+     * accumulate the given value, increases count
+     */
+    public void accumulate(Serializable context, Object value) {
+        AverageData data = (AverageData) context;
+        data.count++;
+        data.total = data.total.add((BigDecimal) value);
+    }
+
+    /**
+     * retracts accumulated amount, decreases count
+     */
+    public void reverse(Serializable context, Object value) throws Exception {
+        AverageData data = (AverageData) context;
+        data.count--;
+        data.total = data.total.subtract((BigDecimal) value);
+    }
+
+    /**
+     * @return currently calculated value
+     */
+    public Object getResult(Serializable context) throws Exception {
+        AverageData data = (AverageData) context;
+        return data.count == 0 ? BigDecimal.ZERO : data.total.divide(BigDecimal.valueOf(data.count), RoundingMode.HALF_UP);
+    }
+
+    /**
+     * @return true if this accumulator supports reverse
+     */
+    public boolean supportsReverse() {
+        return true;
+    }
 
     public Class<?> getResultType() {
-        // TODO Auto-generated method stub
-        return null;
+        return BigDecimal.class;
     }
 }

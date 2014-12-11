@@ -16,7 +16,6 @@ import org.kie.api.builder.Message.Level;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 /**
  * @deprecated use {@link com.github.ligangty.droolstest.bank.utils.KieHelper} instead

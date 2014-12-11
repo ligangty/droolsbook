@@ -166,6 +166,7 @@ rule averageBalanceOver30Days
     	setAverageBalance((BigDecimal)$averageBalance)
     };
 end
+
 /*
 // using full accumulate (not used in book as its use is discouraged)
 rule averageBalanceOver30Days
@@ -219,24 +220,16 @@ rule twoLargeWithdrawals
 dialect "mvel"
   when
     $account : Account( )
-    accumulate( TransactionCompletedEvent( fromAccountNumber
-      == $account.number, $amount : amount ) over 
-      window:time( 30d ) from entry-point TransactionStream, 
-      $averageAmount : average( $amount ) )
-    $t1 : TransactionCreatedEvent( fromAccountNumber == 
-      $account.number, amount > $averageAmount * 3.00 ) over 
-      window:time(90s) from entry-point TransactionStream
-    $t2 : TransactionCreatedEvent( this != $t1, 
-      fromAccountNumber == $account.number, 
-      amount > $averageAmount * 3.00 ) over 
-      window:time(90s) from entry-point TransactionStream
+    accumulate( TransactionCompletedEvent( fromAccountNumber == $account.number, $amount : amount ) 
+      over window:time( 30d ) from entry-point TransactionStream, $averageAmount : average( $amount ) )
+    $t1 : TransactionCreatedEvent( fromAccountNumber == $account.number, amount > $averageAmount * 3.00 )
+      over window:time(90s) from entry-point TransactionStream
+    $t2 : TransactionCreatedEvent( this != $t1, fromAccountNumber == $account.number, amount > $averageAmount * 3.00 ) 
+      over window:time(90s) from entry-point TransactionStream
   then
-    insert(new SuspiciousAccount($account.number, 
-      SuspiciousAccountSeverity.MINOR));
-    insert(new SuspiciousTransaction($t1.transactionUuid, 
-      SuspiciousTransactionSeverity.MINOR));
-    insert(new SuspiciousTransaction($t2.transactionUuid, 
-      SuspiciousTransactionSeverity.MINOR));
+    insert(new SuspiciousAccount($account.number, SuspiciousAccountSeverity.MINOR));
+    insert(new SuspiciousTransaction($t1.transactionUuid, SuspiciousTransactionSeverity.MINOR));
+    insert(new SuspiciousTransaction($t2.transactionUuid, SuspiciousTransactionSeverity.MINOR));
 end
 // @extract-end
 
