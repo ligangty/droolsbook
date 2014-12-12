@@ -335,6 +335,7 @@ public class CepTest {
      * accountInfo); assertFired("highActivity"); }
      */
 
+    @SuppressWarnings("unused")
     private BigDecimal getAverageBalanceOverMonth() {
         QueryResults queryResults = session.getQueryResults("averageBalanceOverMonthQuery",
                 new Object[] { account.getNumber() });

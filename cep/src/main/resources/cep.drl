@@ -64,31 +64,21 @@ end
 rule sequenceOfIncreasingWithdrawals
   when
     $account:Account($number : number)
-    $t1:TransactionCreatedEvent(fromAccountNumber == $number)
-      from entry-point TransactionStream    
-    $t2:TransactionCreatedEvent(amount > $t1.amount, 
-      fromAccountNumber == $number, this after[0, 3m] $t1)
-      from entry-point TransactionStream
-    not (TransactionCreatedEvent(fromAccountNumber == $number,
-      this after $t1, this before $t2 ) 
-      from entry-point TransactionStream)
-    $t3:TransactionCreatedEvent(amount > $t2.amount, 
-      fromAccountNumber == $number, this after[0, 3m] $t2 )
-      from entry-point TransactionStream
-    not (TransactionCreatedEvent(fromAccountNumber == $number,
-      this after $t2, this before $t3 ) 
-      from entry-point TransactionStream)
-    AccountInfo(number == $number, $t1.amount + $t2.amount
-      + $t3.amount > averageBalance * BigDecimal.valueOf(0.9))
+    $t1:TransactionCreatedEvent(fromAccountNumber == $number) from entry-point TransactionStream    
+    $t2:TransactionCreatedEvent(amount > $t1.amount, fromAccountNumber == $number, this after[0, 3m] $t1)
+        from entry-point TransactionStream
+      not (TransactionCreatedEvent(fromAccountNumber == $number, this after $t1, this before $t2 ) 
+        from entry-point TransactionStream)
+    $t3:TransactionCreatedEvent(amount > $t2.amount, fromAccountNumber == $number, this after[0, 3m] $t2 )
+        from entry-point TransactionStream
+      not (TransactionCreatedEvent(fromAccountNumber == $number, this after $t2, this before $t3 ) 
+        from entry-point TransactionStream)
+    AccountInfo(number == $number, $t1.amount + $t2.amount + $t3.amount > averageBalance * BigDecimal.valueOf(0.9))
   then
-    insert(new SuspiciousAccount($number, 
-      SuspiciousAccountSeverity.MAJOR));
-    insert(new SuspiciousTransaction($t1.transactionUuid, 
-      SuspiciousTransactionSeverity.MAJOR));
-    insert(new SuspiciousTransaction($t2.transactionUuid, 
-      SuspiciousTransactionSeverity.MAJOR));
-    insert(new SuspiciousTransaction($t3.transactionUuid, 
-      SuspiciousTransactionSeverity.MAJOR));
+    insert(new SuspiciousAccount($number, SuspiciousAccountSeverity.MAJOR));
+    insert(new SuspiciousTransaction($t1.transactionUuid, SuspiciousTransactionSeverity.MAJOR));
+    insert(new SuspiciousTransaction($t2.transactionUuid, SuspiciousTransactionSeverity.MAJOR));
+    insert(new SuspiciousTransaction($t3.transactionUuid, SuspiciousTransactionSeverity.MAJOR));
 end 
 // @extract-end
 
@@ -155,9 +145,8 @@ rule averageBalanceOver30Days
   when
     $account : Account( )
     // @extract-start 06 28
-    accumulate( AccountUpdatedEvent( accountNumber == 
-      $account.number, $balance : balance ) over 
-      window:time( 30d ) from entry-point AccountStream,
+    accumulate( AccountUpdatedEvent( accountNumber == $account.number, $balance : balance ) 
+      over window:time( 30d ) from entry-point AccountStream,
       $averageBalance : bigDecimalAverage($balance) )
     // @extract-end  
     $accountInfo : AccountInfo( number == $account.number )		
