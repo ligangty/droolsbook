@@ -72,7 +72,7 @@ public class ETLRuleFlowTest {
     // @extract-start 04 72
     @Test
     public void unknownCountryUnknown() throws Exception {
-        Map<String,String> addressMap = Maps.newHashMap();
+        Map<String, String> addressMap = Maps.newHashMap();
         addressMap.put("_type_", "Address");
         addressMap.put("country", "no country");
 
@@ -88,7 +88,7 @@ public class ETLRuleFlowTest {
     // @extract-start 04 73
     @Test
     public void unknownCountryKnown() throws Exception {
-        Map<String,String> addressMap = Maps.newHashMap();
+        Map<String, String> addressMap = Maps.newHashMap();
         addressMap.put("_type_", "Address");
         addressMap.put("country", "Ireland");
 

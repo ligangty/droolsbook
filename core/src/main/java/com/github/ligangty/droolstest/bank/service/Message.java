@@ -6,11 +6,11 @@ public interface Message {
     public enum Type {
         ERROR, WARNING,
     }
-    
+
     Type getType();
-    
+
     String getMessageKey();
-    
+
     List<Object> getContextOrdered();
-    
+
 }

@@ -5,26 +5,24 @@ import com.github.ligangty.droolstest.bank.service.ValidationReport;
 
 // @extract-start 05 01
 public interface StatefulService {
-  /**
-   * registers new objects with this service or notifies this
-   * service that an object has been modified
-   */
-  void insertOrUpdate(Object object);
+    /**
+     * registers new objects with this service or notifies this service that an object has been modified
+     */
+    void insertOrUpdate(Object object);
 
-  /**
-   * same as insertOrUpdate(Object object); plus this method 
-   * calls insertOrUpdate on child objects
-   */
-  void insertOrUpdateRecursive(Customer customer);
+    /**
+     * same as insertOrUpdate(Object object); plus this method calls insertOrUpdate on child objects
+     */
+    void insertOrUpdateRecursive(Customer customer);
 
-  /**
-   * executes validation rules and returns report 
-   */
-  ValidationReport executeRules();
-  
-  /**
-   * releases all resources held by this service
-   */
-  void terminate();
+    /**
+     * executes validation rules and returns report
+     */
+    ValidationReport executeRules();
+
+    /**
+     * releases all resources held by this service
+     */
+    void terminate();
 }
 // @extract-end

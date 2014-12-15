@@ -35,7 +35,7 @@ public class InterestRateDecisionTableTest {
         session = kieBase.newStatelessKieSession();
         DATE = new DateMidnight(2008, 1, 1);
 
-//        method();
+        // method();
     }
 
     @SuppressWarnings("unused")

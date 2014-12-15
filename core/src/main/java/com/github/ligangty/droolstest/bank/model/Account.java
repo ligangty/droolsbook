@@ -26,121 +26,114 @@ public class Account implements Serializable {
 
     private static final long serialVersionUID = -1412227096409120278L;
 
-public enum Type {
-    TRANSACTIONAL, STUDENT, SAVINGS, JOINT
-  }
-
-  private String name;
-  private Long number;
-  private Type type = Type.TRANSACTIONAL;
-  private BigDecimal balance = BigDecimal.ZERO;
-  private BigDecimal interestRate;
-  private String currency;
-  @ManyToOne private Customer owner;
-  private Date startDate;
-  private Date endDate;
-  @Id private String uuid;
-  
-  public String getUuid() {
-    return uuid;
-  }
-  
-  public void setUuid(String uuid) {
-    this.uuid = uuid;
-  }
-  
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public Long getNumber() {
-    return number;
-  }
-
-  public void setNumber(Long number) {
-    this.number = number;
-  }
-
-  public BigDecimal getBalance() {
-    return balance;
-  }
-
-  public void setBalance(BigDecimal balance) {
-    if (balance == null) {
-      throw new IllegalArgumentException(
-          "Account balance cannot be null.");
+    public enum Type {
+        TRANSACTIONAL, STUDENT, SAVINGS, JOINT
     }
-    this.balance = balance;
-  }
 
-  public BigDecimal getInterestRate() {
-    return interestRate;
-  }
+    private String name;
+    private Long number;
+    private Type type = Type.TRANSACTIONAL;
+    private BigDecimal balance = BigDecimal.ZERO;
+    private BigDecimal interestRate;
+    private String currency;
+    @ManyToOne
+    private Customer owner;
+    private Date startDate;
+    private Date endDate;
+    @Id
+    private String uuid;
 
-  public void setInterestRate(BigDecimal interestRate) {
-    this.interestRate = interestRate;
-  }
+    public String getUuid() {
+        return uuid;
+    }
 
-  public Type getType() {
-    return type;
-  }
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
-  public void setType(Type type) {
-    this.type = type;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getCurrency() {
-    return currency;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setCurrency(String currency) {
-    this.currency = currency;
-  }
+    public Long getNumber() {
+        return number;
+    }
 
-  public Customer getOwner() {
-    return owner;
-  }
+    public void setNumber(Long number) {
+        this.number = number;
+    }
 
-  public void setOwner(Customer owner) {
-    this.owner = owner;
-  }
+    public BigDecimal getBalance() {
+        return balance;
+    }
 
-  @Override
-  public boolean equals(final Object other) {
-    if (this == other)
-      return true;
-    if (!(other instanceof Account))
-      return false;
-    Account castOther = (Account) other;
-    return new EqualsBuilder().append(name, castOther.name)
-        .append(number, castOther.number).append(type,
-            castOther.type).append(balance, castOther.balance)
-        .append(interestRate, castOther.interestRate).append(
-            currency, castOther.currency).append(startDate,
-            castOther.startDate).append(endDate,
-            castOther.endDate).isEquals();
-  }
+    public void setBalance(BigDecimal balance) {
+        if (balance == null) {
+            throw new IllegalArgumentException("Account balance cannot be null.");
+        }
+        this.balance = balance;
+    }
 
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder(-806458195, -1310850617)
-        .append(name).append(number).append(type).append(
-            balance).append(interestRate).append(currency)
-        .append(startDate).append(endDate).toHashCode();
-  }
+    public BigDecimal getInterestRate() {
+        return interestRate;
+    }
 
-  @Override
-  public String toString() {
-    return new ToStringBuilder(this).append("name", name)
-        .append("number", number).append("type", type).append(
-            "balance", balance).append("interestRate",
-            interestRate).append("currency", currency).append(
-            "startDate", startDate).append("endDate", endDate)
-        .toString();
-  }
+    public void setInterestRate(BigDecimal interestRate) {
+        this.interestRate = interestRate;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public Customer getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Customer owner) {
+        this.owner = owner;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other)
+            return true;
+        if (!(other instanceof Account))
+            return false;
+        Account castOther = (Account) other;
+        return new EqualsBuilder().append(name, castOther.name).append(number, castOther.number).append(type, castOther.type)
+                .append(balance, castOther.balance).append(interestRate, castOther.interestRate)
+                .append(currency, castOther.currency).append(startDate, castOther.startDate).append(endDate, castOther.endDate)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(-806458195, -1310850617).append(name).append(number).append(type).append(balance)
+                .append(interestRate).append(currency).append(startDate).append(endDate).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).append("name", name).append("number", number).append("type", type)
+                .append("balance", balance).append("interestRate", interestRate).append("currency", currency)
+                .append("startDate", startDate).append("endDate", endDate).toString();
+    }
 
 }

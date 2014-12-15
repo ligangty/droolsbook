@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.github.ligangty.droolstest.transform.service.LegacyBankService;
 
-
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class MockLegacyBankService implements LegacyBankService {
 

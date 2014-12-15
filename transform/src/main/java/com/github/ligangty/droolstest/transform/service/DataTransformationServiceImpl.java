@@ -42,7 +42,7 @@ public class DataTransformationServiceImpl implements DataTransformationService 
         session.setGlobal("reportFactory", reportFactory);
 
         for (Object customerMap : legacyBankService.findAllCustomers()) {
-            processCustomer((Map<String,Object>) customerMap);
+            processCustomer((Map<String, Object>) customerMap);
         }
     }
 

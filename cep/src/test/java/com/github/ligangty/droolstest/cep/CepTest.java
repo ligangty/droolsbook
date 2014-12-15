@@ -93,7 +93,7 @@ public class CepTest {
         // @extract-start 06 36
         KieBaseConfiguration config = kieHelper.newKieBaseConfiguration();
         config.setOption(EventProcessingOption.STREAM);
-        
+
         // @extract-end
 
         kieBase = kieHelper.addFromClassPath("cep.drl", CepTest.class.getClassLoader()).build(config);
@@ -140,7 +140,7 @@ public class CepTest {
         account2.setBalance(BigDecimal.valueOf(1400));
         session.insert(account2);
         session.fireAllRules();
-        
+
         Account account3 = new Account();
         account3.setBalance(BigDecimal.valueOf(2100));
         session.insert(account3);

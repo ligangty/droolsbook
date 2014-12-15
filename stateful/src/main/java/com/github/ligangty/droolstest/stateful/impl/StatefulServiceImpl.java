@@ -159,6 +159,7 @@ public class StatefulServiceImpl implements StatefulService, Serializable {
      * // @extract-start 05 23 private void writeObject(ObjectOutputStream out) throws IOException { out.defaultWriteObject();
      * 
      * DroolsObjectOutputStream droolsOut = new DroolsObjectOutputStream( out); droolsOut.writeObject(knowledgeBase); } //
+     * 
      * @extract-end
      * 
      * // @extract-start 05 24 private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {

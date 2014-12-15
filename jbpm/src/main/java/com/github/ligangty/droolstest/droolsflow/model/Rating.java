@@ -4,19 +4,19 @@ import java.io.Serializable;
 
 public class Rating implements Serializable {
 
-  /**
+    /**
    * 
    */
-  private static final long serialVersionUID = 1L;
-  
-  private Integer rating;
+    private static final long serialVersionUID = 1L;
 
-  public Integer getRating() {
-    return rating;
-  }
+    private Integer rating;
 
-  public void setRating(Integer rating) {
-    this.rating = rating;
-  }
-  
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
 }

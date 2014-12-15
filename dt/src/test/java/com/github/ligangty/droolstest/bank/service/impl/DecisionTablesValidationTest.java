@@ -25,7 +25,7 @@ public class DecisionTablesValidationTest extends ValidationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-//        method();
+        // method();
         ClassLoader currentLoader = DecisionTablesValidationTest.class.getClassLoader();
         KieBase kieBase = kieHelper.addFromClassPath("validation-full.xls", currentLoader).build();
         inquiryService = new BankingInquiryServiceImpl();
@@ -43,10 +43,10 @@ public class DecisionTablesValidationTest extends ValidationTest {
         DroolsTestUtil.seeDecisionDrlContent(dtconf, ResourceFactory.newClassPathResource("validation-full.xls"));
     }
 
-//    @Ignore("Not implemented yet")
-//    @Override
-//    public void accountBalanceAtLeast() {
-//    }
+    // @Ignore("Not implemented yet")
+    // @Override
+    // public void accountBalanceAtLeast() {
+    // }
 
     @Ignore("Not implemented yet")
     @Override
@@ -68,13 +68,13 @@ public class DecisionTablesValidationTest extends ValidationTest {
     public void studentAccountCustomerAgeLessThan4() {
     }
 
-//    @Ignore("Not implemented yet")
-//    @Override
-//    public void accountNumberUnique() {
-//    }
+    // @Ignore("Not implemented yet")
+    // @Override
+    // public void accountNumberUnique() {
+    // }
 
-//    @Ignore("Not implemented yet")
-//    @Override
-//    public void accountOwnerRequired() {
-//    }
+    // @Ignore("Not implemented yet")
+    // @Override
+    // public void accountOwnerRequired() {
+    // }
 }

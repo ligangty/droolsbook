@@ -24,7 +24,7 @@ public class SimpleDSLTest {
         KieBaseOption[] options = { SequentialOption.YES };
         KieBase kieBase = kieHelper.addFromClassPath("simple.dsl", currentLoader)
                 .addFromClassPath("simple.dslr", currentLoader).build(options);
-        
+
         session = kieBase.newStatelessKieSession();
         session.addEventListener(new TrackingAgendaEventListener());
     }

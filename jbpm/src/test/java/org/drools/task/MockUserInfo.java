@@ -11,7 +11,7 @@ import org.kie.internal.task.api.UserInfo;
 
 public class MockUserInfo implements UserInfo {
 
-	private Map<Group, List<OrganizationalEntity>> groups = new HashMap<Group, List<OrganizationalEntity>>();
+    private Map<Group, List<OrganizationalEntity>> groups = new HashMap<Group, List<OrganizationalEntity>>();
 
     private Map<OrganizationalEntity, String> emails = new HashMap<OrganizationalEntity, String>();
 
@@ -36,10 +36,8 @@ public class MockUserInfo implements UserInfo {
     }
 
     public String getEmailForEntity(OrganizationalEntity entity) {
-        return emails.get( entity );
+        return emails.get(entity);
     }
-
-
 
     public Map<OrganizationalEntity, String> getDisplayNames() {
         return displayNames;
@@ -58,23 +56,20 @@ public class MockUserInfo implements UserInfo {
     }
 
     public Iterator<OrganizationalEntity> getMembersForGroup(Group group) {
-        return groups.get( group ).iterator();
+        return groups.get(group).iterator();
     }
 
     public boolean hasEmail(Group group) {
-        return emails.containsKey( group );
+        return emails.containsKey(group);
     }
 
     public String getDisplayName(OrganizationalEntity entity) {
-        String displayName = displayNames.get( entity );
-        return ( displayName != null ) ? displayName : entity.getId();
+        String displayName = displayNames.get(entity);
+        return (displayName != null) ? displayName : entity.getId();
     }
 
     public String getLanguageForEntity(OrganizationalEntity entity) {
-        return languages.get( entity );
+        return languages.get(entity);
     }
-
-    
-
 
 }
