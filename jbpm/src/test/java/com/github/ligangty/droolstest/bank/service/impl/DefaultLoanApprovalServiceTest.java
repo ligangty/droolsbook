@@ -12,8 +12,11 @@ import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.task.MockUserInfo;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.utils.OnErrorAction;
+import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
+import org.jbpm.services.task.wih.util.LocalHTWorkItemHandlerUtil;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -196,10 +199,8 @@ public class DefaultLoanApprovalServiceTest extends JbpmBpmn2TestCase {
     @Test
     public void workItemSetup() {
         // RuleBaseConfiguration ruleBaseConfiguration = ((AbstractRuleBase)kieBase).getConfiguration();
-        // System.out.println(ruleBaseConfiguration
-        // .getWorkItemHandlers());
-        // System.out.println(ruleBaseConfiguration
-        // .getProcessWorkDefinitions());
+        // System.out.println(ruleBaseConfiguration.getWorkItemHandlers());
+        // System.out.println(ruleBaseConfiguration.getProcessWorkDefinitions());
     }
 
     @Test
@@ -334,7 +335,9 @@ public class DefaultLoanApprovalServiceTest extends JbpmBpmn2TestCase {
     public void processLoan() throws Exception {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("droolsbook.jbpm");
 
-        TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
+        // TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
+        TaskService taskService = LocalHTWorkItemHandlerUtil.registerLocalHTWorkItemHandler(session, emf,
+                new MvelUserGroupCallbackImpl(true));
         LocalTaskService localTaskService = new LocalTaskService(taskService);
 
         MockUserInfo userInfo = new MockUserInfo();

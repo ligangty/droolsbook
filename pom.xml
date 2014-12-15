@@ -83,6 +83,11 @@
                 <version>${org.drools.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.jbpm</groupId>
+                <artifactId>jbpm-human-task-workitems</artifactId>
+                <version>${org.drools.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-api</artifactId>
                 <version>${org.drools.version}</version>
