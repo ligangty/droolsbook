@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_loan" structureRef="com.github.ligangty.droolstest.bank.model.Loan" />
+  <itemDefinition id="_approvedEvent" structureRef="Boolean" />
+  <itemDefinition id="_customer" structureRef="com.github.ligangty.droolstest.bank.model.Customer" />
+  <itemDefinition id="_loanSourceAccount" structureRef="com.github.ligangty.droolstest.bank.model.Account" />
+  <itemDefinition id="_customerLoanRating" structureRef="Integer" />
+  <itemDefinition id="_exception" structureRef="java.lang.Exception" />
+
+  <process processType="Private" isExecutable="true" id="loanApproval" name="Loan Approval Flow" tns:packageName="com.github.ligangty.droolstest.droolsflow.loan" >
+
+    <!-- process variables -->
+    <property id="loan" itemSubjectRef="null"/>
+    <property id="approvedEvent" itemSubjectRef="null"/>
+    <property id="customer" itemSubjectRef="null"/>
+    <property id="loanSourceAccount" itemSubjectRef="null"/>
+    <property id="customerLoanRating" itemSubjectRef="null"/>
+    <property id="exception" itemSubjectRef="null"/>
+
+    <!-- nodes -->
+    <startEvent id="_1"  isInterrupting="true">
+    </startEvent>
+
+    <!-- connections -->
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="loanApproval" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="39" y="39" width="48" height="48" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>
