@@ -5,18 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.drools.core.audit.WorkingMemoryFileLogger;
-import org.drools.task.MockUserInfo;
-import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.services.task.utils.OnErrorAction;
-import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
-import org.jbpm.services.task.wih.util.LocalHTWorkItemHandlerUtil;
+import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -32,6 +23,7 @@ import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -39,7 +31,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.SystemEventListenerFactory;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 import com.github.ligangty.droolstest.bank.model.Account;
 import com.github.ligangty.droolstest.bank.model.Customer;
@@ -51,12 +43,13 @@ import com.github.ligangty.droolstest.droolsflow.model.Rating;
 import com.github.ligangty.droolstest.droolsflow.workitem.TransferWorkItemHandler;
 
 @RunWith(JMock.class)
-public class DefaultLoanApprovalServiceTest extends JbpmBpmn2TestCase {
+public class DefaultLoanApprovalServiceTest extends JbpmJUnitBaseTestCase {
 
     private static final String PROCESS_RATING_CALCULATION = "ratingCalculation";
     private static final String PROCESS_LOAN_APPROVAL = "loanApproval";
     static KieBase kieBase;
     KieSession session;
+    RuntimeEngine runtimeEngine;
     Loan loan;
     Customer customer;
     ProcessInstance processInstance;
@@ -89,6 +82,11 @@ public class DefaultLoanApprovalServiceTest extends JbpmBpmn2TestCase {
 
     WorkingMemoryFileLogger fileLogger;
 
+    public DefaultLoanApprovalServiceTest() {
+        // setup data source, enable persistence
+        super(false, false);
+    }
+
     @BeforeClass
     public static void setUpClass() throws Exception {
 
@@ -109,7 +107,10 @@ public class DefaultLoanApprovalServiceTest extends JbpmBpmn2TestCase {
     // @extract-start 07 01
     @Before
     public void setUp() throws Exception {
-        session = createKnowledgeSession(kieBase);
+        createRuntimeManager("loanApproval.bpmn", "ratingCalculation.bpmn");
+
+        runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get());
+        session = runtimeEngine.getKieSession();
 
         trackingProcessEventListener = new TrackingProcessEventListener();
         session.addEventListener(trackingProcessEventListener);
@@ -333,31 +334,29 @@ public class DefaultLoanApprovalServiceTest extends JbpmBpmn2TestCase {
     // @extract-start 07 11
     @Test
     public void processLoan() throws Exception {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("droolsbook.jbpm");
 
+        ProcessInstance processInstance = session.startProcess("loanApproval");
         // TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
-        TaskService taskService = LocalHTWorkItemHandlerUtil.registerLocalHTWorkItemHandler(session, emf,
-                new MvelUserGroupCallbackImpl(true));
-        LocalTaskService localTaskService = new LocalTaskService(taskService);
+        TaskService taskService = runtimeEngine.getTaskService();
 
-        MockUserInfo userInfo = new MockUserInfo();
-        taskService.setUserinfo(userInfo);
-
-        TaskServiceSession taskSession = taskService.createSession();
-        taskSession.addUser(new UserImpl("Administrator"));
-        taskSession.addUser(new UserImpl("123"));
-        taskSession.addUser(new UserImpl("456"));
-        taskSession.addUser(new UserImpl("789"));
-
-        LocalHTWorkItemHandler htHandler = new LocalHTWorkItemHandler(localTaskService, session, OnErrorAction.RETHROW);
-        htHandler.connect();
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
-        setUpLowAmount();
-        startProcess();
+//        MockUserInfo userInfo = new MockUserInfo();
+//        taskService.setUserInfo(userInfo);
+//
+//        TaskServiceSession taskSession = taskService.createSession();
+//        taskSession.addUser(new UserImpl("Administrator"));
+//        taskSession.addUser(new UserImpl("123"));
+//        taskSession.addUser(new UserImpl("456"));
+//        taskSession.addUser(new UserImpl("789"));
+//
+//        LocalHTWorkItemHandler htHandler = new LocalHTWorkItemHandler(localTaskService, session, OnErrorAction.RETHROW);
+//        htHandler.connect();
+//        session.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
+//        setUpLowAmount();
+//        startProcess();
         // @extract-end
 
         // @extract-start 07 12
-        List<TaskSummary> tasks = localTaskService.getTasksAssignedAsPotentialOwner("123", "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("123", "en-UK");
         assertEquals(1, tasks.size());
         TaskSummary task = tasks.get(0);
         assertEquals("Process Loan", task.getName());
@@ -366,9 +365,9 @@ public class DefaultLoanApprovalServiceTest extends JbpmBpmn2TestCase {
         // @extract-end
 
         // @extract-start 07 13
-        localTaskService.claim(task.getId(), "123");
-        localTaskService.start(task.getId(), "123");
-        localTaskService.complete(task.getId(), "123", null);
+        taskService.claim(task.getId(), "123");
+        taskService.start(task.getId(), "123");
+        taskService.complete(task.getId(), "123", null);
 
         assertNodeTriggered(processInstance.getId(), "Join Process");
     }

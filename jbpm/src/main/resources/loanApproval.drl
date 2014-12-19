@@ -1,10 +1,10 @@
-package com.github.ligangty.droolstest.droolsflow.loan
+package com.github.ligangty.droolstest.droolsflow.loan;
 
-import com.github.ligangty.droolstest.droolsflow.model.*
-import com.github.ligangty.droolstest.bank.model.*
-import com.github.ligangty.droolstest.bank.service.*
+import com.github.ligangty.droolstest.droolsflow.model.*;
+import com.github.ligangty.droolstest.bank.model.*;
+import com.github.ligangty.droolstest.bank.service.*;
 
-import org.drools.runtime.process.ProcessInstance
+import org.kie.api.runtime.process.ProcessInstance;
 
 global ValidationReport validationReport
 

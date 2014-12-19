@@ -88,6 +88,12 @@
                 <version>${org.drools.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.jbpm</groupId>
+                <artifactId>jbpm-test</artifactId>
+                <version>${org.drools.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.kie</groupId>
                 <artifactId>kie-api</artifactId>
                 <version>${org.drools.version}</version>
@@ -105,7 +111,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>17.0</version>
+                <version>13.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

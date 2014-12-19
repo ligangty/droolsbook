@@ -71,6 +71,11 @@
             <scope>test</scope>
             <classifier>tests</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

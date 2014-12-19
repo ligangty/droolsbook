@@ -63,12 +63,12 @@
      <tns:import name="com.github.ligangty.droolstest.droolsflow.model.DefaultMessage" />
      <tns:import name="com.github.ligangty.droolstest.droolsflow.model.Rating" />
      <tns:import name="com.github.ligangty.droolstest.bank.service.*" />
-     <tns:import name="org.drools.runtime.process.ProcessInstance" />
-     <tns:import name="org.jbpm.workflow.instance.WorkflowProcessInstance" />
+     <tns:import name="org.kie.api.runtime.process.ProcessInstance" />
+     <tns:import name="org.kie.api.runtime.process.WorkflowProcessInstance" />
      <tns:import name="org.jbpm.process.instance.impl.ProcessInstanceImpl" />
      <tns:import name="org.jbpm.process.instance.context.variable.VariableScopeInstance" />
      <tns:import name="org.jbpm.process.core.context.variable.VariableScope" />
-     <tns:import name="org.drools.runtime.ClassObjectFilter" />
+     <tns:import name="org.kie.api.runtime.ClassObjectFilter" />
     </extensionElements>
     <!-- process variables -->
     <property id="approvedEvent" itemSubjectRef="_approvedEventItem"/>
@@ -199,7 +199,6 @@ System.out.println("");</tns:script>
     </endEvent>
     <exclusiveGateway id="_20" name="Validated?" gatewayDirection="Diverging" />
     <parallelGateway id="_23" name="Join Process" gatewayDirection="Converging" />
-    <!--
     <intermediateCatchEvent id="_22" name="Approve Event" >
       <dataOutput id="_22_Output" name="event" />
       <dataOutputAssociation>
@@ -211,7 +210,6 @@ System.out.println("");</tns:script>
       </outputSet>
       <signalEventDefinition signalRef="LoanApprovedEvent"/>
     </intermediateCatchEvent>
-    -->
     <task id="_25" name="Email" tns:taskName="Email" >
       <ioSpecification>
         <dataInput id="_25_BodyInput" name="Body" />
@@ -327,7 +325,7 @@ Customer Service Team</from>
     <sequenceFlow id="_25-_21" sourceRef="_25" targetRef="_21" />
     <sequenceFlow id="_14-_20" sourceRef="_14" targetRef="_20" />
     <sequenceFlow id="_12-_23" sourceRef="_12" targetRef="_23" />
-   <!--<sequenceFlow id="_22-_23" sourceRef="_22" targetRef="_23" />-->
+    <sequenceFlow id="_22-_23" sourceRef="_22" targetRef="_23" />
     <sequenceFlow id="_20-_25" sourceRef="_20" targetRef="_25" name="otherwise" tns:priority="100" >
       <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >eval(true)</conditionExpression>
     </sequenceFlow>
